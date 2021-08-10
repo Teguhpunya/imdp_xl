@@ -78,6 +78,7 @@ class _PagePetelurState extends State<PagePetelur> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: _buildWidget(2));
+    return ListView(
+        padding: const EdgeInsets.all(8), children: _buildWidget(2));
   }
 }
