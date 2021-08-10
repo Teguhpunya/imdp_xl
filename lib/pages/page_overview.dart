@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/models/model_node_temp.dart';
+import 'package:provider/provider.dart';
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key}) : super(key: key);
@@ -12,16 +12,16 @@ class OverviewPage extends StatefulWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
-  List<Widget> _buildColumnsPembenih(int count) {
+  List<Widget> _buildColumnsPembenih(NodeTempModel nodes) {
     return List.generate(
-        count,
+        nodes.getNodes.length,
         (index) => Container(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: Column(
                 children: [
-                  Text("Kandang ${index + 1}"),
+                  Text("Kandang ${nodes.getNodes[index].getKandang}"),
                   Text(
-                    "${27 + Random().nextInt(31 - 27)}° C",
+                    "${nodes.getNodes[index].getSuhu}° C",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],
@@ -48,6 +48,8 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    var _nodeTemp = context.read<NodeTempModel>();
+
     return ListView(
       padding: const EdgeInsets.all(8),
       children: <Widget>[
@@ -89,7 +91,7 @@ class _OverviewPageState extends State<OverviewPage> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: _buildColumnsPembenih(2),
+                              children: _buildColumnsPembenih(_nodeTemp),
                             ),
                           )
                         ],

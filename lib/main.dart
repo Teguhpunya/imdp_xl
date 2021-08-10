@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/models/model_node_temp.dart';
+import 'package:imdp_xl/mqtt/mqttAppState.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
 import 'package:imdp_xl/pages/page_pembenihan.dart';
 import 'package:imdp_xl/pages/page_petelur.dart';
+import 'package:imdp_xl/pages/page_test_mqtt.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    const MaterialApp(
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<MQTTAppState>(
+        create: (_) => MQTTAppState(),
+      ),
+      ChangeNotifierProvider<NodeTempModel>(create: (_) => NodeTempModel()),
+    ],
+    child: const MaterialApp(
       home: HomePage(),
     ),
-  );
+  ));
 }
 
 class HomePage extends StatelessWidget {
@@ -17,9 +27,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const List<Widget> pages = [
+      OverviewPage(),
+      PagePembenihan(),
+      PagePetelur(),
+      TestPageMqtt()
+    ];
+
     return MaterialApp(
       home: DefaultTabController(
-        length: 3,
+        length: pages.length,
         child: Scaffold(
           appBar: AppBar(
             bottom: const TabBar(
@@ -37,12 +54,16 @@ class HomePage extends StatelessWidget {
                   icon: Icon(FontAwesomeIcons.egg),
                   text: 'Petelur',
                 ),
+                Tab(
+                  icon: Icon(FontAwesomeIcons.accessibleIcon),
+                  text: "MQTT",
+                )
               ],
             ),
             title: const Text('Qualidea'),
           ),
           body: const TabBarView(
-            children: [OverviewPage(), PagePembenihan(), PagePetelur()],
+            children: pages,
           ),
         ),
       ),

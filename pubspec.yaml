@@ -31,6 +31,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   font_awesome_flutter: ^9.1.0
   draw_graph: ^1.0.0
+  mqtt_client: ^9.4.2
 
 dev_dependencies:
   flutter_test:

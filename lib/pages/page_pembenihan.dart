@@ -1,7 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/models/model_node_temp.dart';
+import 'package:imdp_xl/models/node_temp.dart';
+import 'package:provider/provider.dart';
 
 class PagePembenihan extends StatefulWidget {
   const PagePembenihan({Key? key}) : super(key: key);
@@ -11,7 +12,10 @@ class PagePembenihan extends StatefulWidget {
 }
 
 class _PagePembenihanState extends State<PagePembenihan> {
-  bool _lampuState = Random().nextBool();
+  // List<NodeTemp> _nodeTemp = [
+  //   NodeTemp(kandang: 1, suhu: 36, stateLampu: true),
+  //   NodeTemp(kandang: 2, suhu: 38, stateLampu: false)
+  // ];
 
   // Generate cards
   Widget buildCard(Widget child) {
@@ -22,14 +26,14 @@ class _PagePembenihanState extends State<PagePembenihan> {
   }
 
   // Lampu button
-  Widget lampuButton() {
+  Widget lampuButton(NodeTemp node) {
     return ElevatedButton(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                (_lampuState) ? Colors.yellow.shade800 : Colors.indigo)),
+                (node.getStateLampu) ? Colors.yellow.shade800 : Colors.indigo)),
         onPressed: () {
           setState(() {
-            _lampuState = !(_lampuState);
+            node.setStateLampu(!node.getStateLampu);
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -42,7 +46,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              Icon((_lampuState)
+              Icon((node.getStateLampu)
                   ? FontAwesomeIcons.solidLightbulb
                   : FontAwesomeIcons.lightbulb),
               SizedBox(
@@ -50,7 +54,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
               ),
               Text("Lampu"),
               Text(
-                (_lampuState) ? "Menyala" : "Mati",
+                (node.getStateLampu) ? "Menyala" : "Mati",
                 style: TextStyle(fontWeight: FontWeight.bold),
               )
             ],
@@ -59,34 +63,36 @@ class _PagePembenihanState extends State<PagePembenihan> {
   }
 
   // Generate widget for cards
-  List<Widget> _buildWidget(int count) {
+  List<Widget> _buildWidget(NodeTempModel nodes) {
     return List.generate(
-        count,
+        nodes.getNodes.length,
         (index) => buildCard(
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      Text("Kandang ${index + 1}"),
+                      Text("Kandang ${nodes.getNodes[index].getKandang}"),
                       Text(
-                        "${27 + Random().nextInt(31 - 27)}° C",
+                        "${nodes.getNodes[index].getSuhu}° C",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
-                lampuButton(),
+                lampuButton(nodes.getNodes[index]),
               ]),
             ));
   }
 
   @override
   Widget build(BuildContext context) {
+    var _nodeTemp = context.read<NodeTempModel>();
+
     return ListView(
       padding: const EdgeInsets.all(8),
       children: [
-        Column(children: _buildWidget(2)),
+        Column(children: _buildWidget(_nodeTemp)),
       ],
     );
   }
