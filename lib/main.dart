@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'pages/page_overview.dart';
-import 'pages/page_pembenihan.dart';
-import 'pages/page_petelur.dart';
+import 'package:imdp_xl/pages/page_overview.dart';
+import 'package:imdp_xl/pages/page_pembenihan.dart';
+import 'package:imdp_xl/pages/page_petelur.dart';
 
 void main() {
   runApp(
