@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
-import 'package:imdp_xl/mqtt/mqttAppState.dart';
+import 'package:imdp_xl/appState.dart';
+import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
 import 'package:imdp_xl/pages/page_pembenihan.dart';
 import 'package:imdp_xl/pages/page_petelur.dart';
@@ -14,7 +15,8 @@ void main() {
       ChangeNotifierProvider<MQTTAppState>(
         create: (_) => MQTTAppState(),
       ),
-      ChangeNotifierProvider<NodeTempModel>(create: (_) => NodeTempModel()),
+      // ChangeNotifierProvider<NodeTempModel>(create: (_) => NodeTempModel()),
+      ChangeNotifierProvider<MqttWrapper>(create: (_) => MqttWrapper()),
     ],
     child: const MaterialApp(
       home: HomePage(),

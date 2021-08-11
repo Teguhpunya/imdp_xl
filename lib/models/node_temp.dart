@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class NodeTemp with ChangeNotifier {
   int kandang = 1;
-  double suhu = 0.0;
+  int suhu = 0;
   bool stateLampu = false;
   // String lampu = "Mati";
 
   NodeTemp(
       {required this.kandang, required this.suhu, required this.stateLampu});
 
-  void setSuhu(double temp) {
+  void setSuhu(int temp) {
     suhu = temp;
     notifyListeners();
   }
@@ -21,7 +21,7 @@ class NodeTemp with ChangeNotifier {
   }
 
   int get getKandang => kandang;
-  double get getSuhu => suhu;
+  int get getSuhu => suhu;
   bool get getStateLampu => stateLampu;
   // String get getLampu => lampu;
 }

@@ -18,5 +18,10 @@ class NodeTempModel extends ChangeNotifier {
     // notifyListeners();
   }
 
+  void modify(NodeTemp node, int index) {
+    _nodes[index - 1] = node;
+    // notifyListeners();
+  }
+
   List<NodeTemp> get getNodes => _nodes;
 }

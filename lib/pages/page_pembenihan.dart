@@ -1,7 +1,10 @@
+// import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
 import 'package:imdp_xl/models/node_temp.dart';
+import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:provider/provider.dart';
 
 class PagePembenihan extends StatefulWidget {
@@ -12,10 +15,43 @@ class PagePembenihan extends StatefulWidget {
 }
 
 class _PagePembenihanState extends State<PagePembenihan> {
-  // List<NodeTemp> _nodeTemp = [
-  //   NodeTemp(kandang: 1, suhu: 36, stateLampu: true),
-  //   NodeTemp(kandang: 2, suhu: 38, stateLampu: false)
-  // ];
+  late MqttWrapper _mqttWrapper;
+
+  @override
+  Widget build(BuildContext context) {
+    _mqttWrapper = Provider.of<MqttWrapper>(context);
+
+    return ListView(
+      padding: const EdgeInsets.all(8),
+      children: [
+        Column(
+            children: _buildWidget(_mqttWrapper.getAppState.getNodeTempModel)),
+      ],
+    );
+  }
+
+  // Generate widget for cards
+  List<Widget> _buildWidget(NodeTempModel nodes) {
+    return List.generate(
+        nodes.getNodes.length,
+        (index) => buildCard(
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      Text("Kandang ${nodes.getNodes[index].getKandang}"),
+                      Text(
+                        "${nodes.getNodes[index].getSuhu}° C",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                lampuButton(nodes.getNodes[index]),
+              ]),
+            ));
+  }
 
   // Generate cards
   Widget buildCard(Widget child) {
@@ -60,40 +96,5 @@ class _PagePembenihanState extends State<PagePembenihan> {
             ],
           ),
         ));
-  }
-
-  // Generate widget for cards
-  List<Widget> _buildWidget(NodeTempModel nodes) {
-    return List.generate(
-        nodes.getNodes.length,
-        (index) => buildCard(
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Text("Kandang ${nodes.getNodes[index].getKandang}"),
-                      Text(
-                        "${nodes.getNodes[index].getSuhu}° C",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                lampuButton(nodes.getNodes[index]),
-              ]),
-            ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var _nodeTemp = context.read<NodeTempModel>();
-
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      children: [
-        Column(children: _buildWidget(_nodeTemp)),
-      ],
-    );
   }
 }

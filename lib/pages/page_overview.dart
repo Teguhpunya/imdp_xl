@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
+import 'package:imdp_xl/appState.dart';
+import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:provider/provider.dart';
 
 class OverviewPage extends StatefulWidget {
@@ -12,43 +14,13 @@ class OverviewPage extends StatefulWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
-  List<Widget> _buildColumnsPembenih(NodeTempModel nodes) {
-    return List.generate(
-        nodes.getNodes.length,
-        (index) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Column(
-                children: [
-                  Text("Kandang ${nodes.getNodes[index].getKandang}"),
-                  Text(
-                    "${nodes.getNodes[index].getSuhu}° C",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            ));
-  }
-
-  List<Widget> _buildColumnsPetelur(int count) {
-    return List.generate(
-        count,
-        (index) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Column(
-                children: [
-                  Text("Kandang ${index + 1}"),
-                  Text(
-                    "Penuh",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            ));
-  }
+  late MqttWrapper _mqttWrapper;
 
   @override
   Widget build(BuildContext context) {
-    var _nodeTemp = context.read<NodeTempModel>();
+    // var _nodeTemp = context.read<NodeTempModel>();
+    _mqttWrapper = context.read<MqttWrapper>();
+    _mqttWrapper.connect();
 
     return ListView(
       padding: const EdgeInsets.all(8),
@@ -91,7 +63,8 @@ class _OverviewPageState extends State<OverviewPage> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: _buildColumnsPembenih(_nodeTemp),
+                              children: _buildColumnsPembenih(
+                                  _mqttWrapper.getAppState.getNodeTempModel),
                             ),
                           )
                         ],
@@ -145,5 +118,39 @@ class _OverviewPageState extends State<OverviewPage> {
         ),
       ],
     );
+  }
+
+  List<Widget> _buildColumnsPembenih(NodeTempModel nodes) {
+    return List.generate(
+        nodes.getNodes.length,
+        (index) => Container(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Column(
+                children: [
+                  Text("Kandang ${nodes.getNodes[index].getKandang}"),
+                  Text(
+                    "${nodes.getNodes[index].getSuhu}° C",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ));
+  }
+
+  List<Widget> _buildColumnsPetelur(int count) {
+    return List.generate(
+        count,
+        (index) => Container(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Column(
+                children: [
+                  Text("Kandang ${index + 1}"),
+                  Text(
+                    "Penuh",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ));
   }
 }

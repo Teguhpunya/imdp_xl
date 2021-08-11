@@ -1,5 +1,5 @@
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:imdp_xl/mqtt/mqttAppState.dart';
+import 'package:imdp_xl/appState.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MQTTManager {
