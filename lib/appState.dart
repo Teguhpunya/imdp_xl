@@ -30,7 +30,7 @@ class MQTTAppState with ChangeNotifier {
 
   void setAppConnectionState(MQTTAppConnectionState state) {
     _appConnectionState = state;
-    notifyListeners();
+    // notifyListeners();
   }
 
   String get getReceivedText => _receivedText;

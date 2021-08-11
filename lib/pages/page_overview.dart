@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
 import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:provider/provider.dart';
 
 class OverviewPage extends StatefulWidget {
@@ -14,13 +13,11 @@ class OverviewPage extends StatefulWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
-  late MqttWrapper _mqttWrapper;
+  late MQTTAppState _state;
 
   @override
   Widget build(BuildContext context) {
-    // var _nodeTemp = context.read<NodeTempModel>();
-    _mqttWrapper = context.read<MqttWrapper>();
-    _mqttWrapper.connect();
+    _state = Provider.of<MQTTAppState>(context);
 
     return ListView(
       padding: const EdgeInsets.all(8),
@@ -64,7 +61,7 @@ class _OverviewPageState extends State<OverviewPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: _buildColumnsPembenih(
-                                  _mqttWrapper.getAppState.getNodeTempModel),
+                                  _state.getNodeTempModel),
                             ),
                           )
                         ],
@@ -131,7 +128,8 @@ class _OverviewPageState extends State<OverviewPage> {
                   Text(
                     "${nodes.getNodes[index].getSuhu}° C",
                     style: TextStyle(fontWeight: FontWeight.bold),
-                  )
+                  ),
+                  Text("${nodes.getNodes[index].getStateLampu}")
                 ],
               ),
             ));

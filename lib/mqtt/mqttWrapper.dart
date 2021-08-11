@@ -4,20 +4,19 @@ import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/mqtt/mqttManager.dart';
 
 class MqttWrapper extends ChangeNotifier {
-  late final MQTTManager _manager;
-  final MQTTAppState _state = MQTTAppState();
-  // final MQTTAppState _appState;
+  late MQTTManager _manager;
+  late MQTTAppState _state;
 
-  MqttWrapper() {
-    // _state = MQTTAppState();
+  void setState(MQTTAppState state) {
+    _state = state;
+  }
+
+  void connect() {
     _manager = MQTTManager(
         host: "test.mosquitto.org",
-        topic: "quaildea/messages",
+        topic: "quaildea/node/temp/#",
         identifier: "Flutter_Test",
         state: _state);
-  }
-  void connect() {
-    // _state = state;
     if (_state.getAppConnectionState == MQTTAppConnectionState.disconnected) {
       _manager.initializeMQTTClient();
       _manager.connect();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/models/model_node_temp.dart';
 import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
@@ -35,6 +34,10 @@ class HomePage extends StatelessWidget {
       PagePetelur(),
       TestPageMqtt()
     ];
+    MQTTAppState _state = Provider.of<MQTTAppState>(context);
+    MqttWrapper _mqttWrapper = context.read<MqttWrapper>();
+    _mqttWrapper.setState(_state);
+    _mqttWrapper.connect();
 
     return MaterialApp(
       home: DefaultTabController(

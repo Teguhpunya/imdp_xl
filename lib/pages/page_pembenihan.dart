@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
 import 'package:imdp_xl/models/node_temp.dart';
-import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:provider/provider.dart';
 
 class PagePembenihan extends StatefulWidget {
@@ -15,17 +15,16 @@ class PagePembenihan extends StatefulWidget {
 }
 
 class _PagePembenihanState extends State<PagePembenihan> {
-  late MqttWrapper _mqttWrapper;
+  late MQTTAppState _state;
 
   @override
   Widget build(BuildContext context) {
-    _mqttWrapper = Provider.of<MqttWrapper>(context);
+    _state = Provider.of<MQTTAppState>(context);
 
     return ListView(
       padding: const EdgeInsets.all(8),
       children: [
-        Column(
-            children: _buildWidget(_mqttWrapper.getAppState.getNodeTempModel)),
+        Column(children: _buildWidget(_state.getNodeTempModel)),
       ],
     );
   }
