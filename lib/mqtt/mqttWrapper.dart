@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/mqtt/mqttManager.dart';
 
-class MqttWrapper extends ChangeNotifier {
+class MqttWrapper with ChangeNotifier {
   late MQTTManager _manager;
   late MQTTAppState _state;
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
-import 'package:imdp_xl/models/node_temp.dart';
+import 'package:imdp_xl/models/node.dart';
 
 enum MQTTAppConnectionState { connected, disconnected, connecting }
 
@@ -19,10 +19,11 @@ class MQTTAppState with ChangeNotifier {
     if (_receivedText != '') {
       var msg = jsonDecode(_receivedText);
       NodeTemp node = NodeTemp(
-          kandang: msg["kandang"],
+          id: msg["id"],
+          jenis: msg["jenis"],
           suhu: msg["suhu"],
           stateLampu: msg["stateLampu"]);
-      _nodeTempModel.modify(node, msg["kandang"]);
+      _nodeTempModel.modify(node);
     }
 
     notifyListeners();

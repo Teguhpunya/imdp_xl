@@ -124,7 +124,7 @@ class _OverviewPageState extends State<OverviewPage> {
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: Column(
                 children: [
-                  Text("Kandang ${nodes.getNodes[index].getKandang}"),
+                  Text("Kandang ${nodes.getNodes[index].getId}"),
                   Text(
                     "${nodes.getNodes[index].getSuhu}° C",
                     style: TextStyle(fontWeight: FontWeight.bold),

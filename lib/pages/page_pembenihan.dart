@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/models/model_node_temp.dart';
-import 'package:imdp_xl/models/node_temp.dart';
+import 'package:imdp_xl/models/node.dart';
 import 'package:provider/provider.dart';
 
 class PagePembenihan extends StatefulWidget {
@@ -39,7 +39,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      Text("Kandang ${nodes.getNodes[index].getKandang}"),
+                      Text("Kandang ${nodes.getNodes[index].getId}"),
                       Text(
                         "${nodes.getNodes[index].getSuhu}° C",
                         style: TextStyle(fontWeight: FontWeight.bold),

@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+// import 'package:imdp_xl/appState.dart';
+// import 'package:provider/provider.dart';
 
 class PagePetelur extends StatefulWidget {
   const PagePetelur({Key? key}) : super(key: key);
@@ -10,6 +12,7 @@ class PagePetelur extends StatefulWidget {
 }
 
 class _PagePetelurState extends State<PagePetelur> {
+  // late MQTTAppState _state = Provider.of<MQTTAppState>(context);
   bool _pakanState = Random().nextBool();
 
   // Pakan button
