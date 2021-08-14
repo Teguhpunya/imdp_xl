@@ -5,7 +5,6 @@ import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
 import 'package:imdp_xl/pages/page_pembenihan.dart';
 import 'package:imdp_xl/pages/page_petelur.dart';
-import 'package:imdp_xl/pages/page_test_mqtt.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -14,11 +13,10 @@ void main() {
       ChangeNotifierProvider<MQTTAppState>(
         create: (_) => MQTTAppState(),
       ),
-      // ChangeNotifierProvider<NodeTempModel>(create: (_) => NodeTempModel()),
       ChangeNotifierProvider<MqttWrapper>(create: (_) => MqttWrapper()),
     ],
     child: const MaterialApp(
-      home: HomePage(),
+      home: const HomePage(),
     ),
   ));
 }
@@ -32,12 +30,11 @@ class HomePage extends StatelessWidget {
       OverviewPage(),
       PagePembenihan(),
       PagePetelur(),
-      TestPageMqtt()
     ];
-    MQTTAppState _state = Provider.of<MQTTAppState>(context);
-    MqttWrapper _mqttWrapper = context.read<MqttWrapper>();
+    final MQTTAppState _state = Provider.of<MQTTAppState>(context);
+    final MqttWrapper _mqttWrapper = context.read<MqttWrapper>();
     _mqttWrapper.setState(_state);
-    _mqttWrapper.connect();
+    _mqttWrapper.configAndConnect();
 
     return MaterialApp(
       home: DefaultTabController(
@@ -59,10 +56,6 @@ class HomePage extends StatelessWidget {
                   icon: Icon(FontAwesomeIcons.egg),
                   text: 'Petelur',
                 ),
-                Tab(
-                  icon: Icon(FontAwesomeIcons.accessibleIcon),
-                  text: "MQTT",
-                )
               ],
             ),
             title: const Text('Qualidea'),

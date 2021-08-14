@@ -67,9 +67,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
                 (node.getStateLampu) ? Colors.yellow.shade800 : Colors.indigo)),
         onPressed: () {
-          setState(() {
-            node.setStateLampu(!node.getStateLampu);
-          });
+          node.setStateLampu(!node.getStateLampu);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Sukses.'),

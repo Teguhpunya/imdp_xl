@@ -11,10 +11,15 @@ class MqttWrapper extends ChangeNotifier {
     _state = state;
   }
 
-  void connect() {
+  void configAndConnect() {
     _manager = MQTTManager(
-        host: "test.mosquitto.org",
-        topic: "quaildea/node/temp/#",
+        // TODO: Gunakan broker external
+        host: "10.0.2.2",
+        // Subscribe semua topic:
+        // Node temperatur -> quaildea/nodes/messages/temp/{nomor node}
+        // Node petelur -> quaildea/nodes/messages/food/{nomor node}
+        topic: "quaildea/nodes/messages/#",
+        // TODO: Pakai UUID
         identifier: "Flutter_Test",
         state: _state);
     if (_state.getAppConnectionState == MQTTAppConnectionState.disconnected) {
