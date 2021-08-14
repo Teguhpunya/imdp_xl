@@ -29,11 +29,19 @@ class _PagePembenihanState extends State<PagePembenihan> {
     );
   }
 
+  // Generate cards
+  Widget _buildCard(Widget child) {
+    return Card(
+      elevation: 4,
+      child: child,
+    );
+  }
+
   // Generate widget for cards
   List<Widget> _buildWidget(NodeTempModel nodes) {
     return List.generate(
         nodes.getNodes.length,
-        (index) => buildCard(
+        (index) => _buildCard(
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -47,27 +55,24 @@ class _PagePembenihanState extends State<PagePembenihan> {
                     ],
                   ),
                 ),
-                lampuButton(nodes.getNodes[index]),
+                _lampuButton(nodes.getNodes[index]),
               ]),
             ));
   }
 
-  // Generate cards
-  Widget buildCard(Widget child) {
-    return Card(
-      elevation: 4,
-      child: child,
-    );
-  }
-
   // Lampu button
-  Widget lampuButton(NodeTemp node) {
+  Widget _lampuButton(NodeTemp node) {
     return ElevatedButton(
         style: ButtonStyle(
+            fixedSize: MaterialStateProperty.resolveWith(
+                (states) => Size.fromWidth(128)),
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
                 (node.getStateLampu) ? Colors.yellow.shade800 : Colors.indigo)),
         onPressed: () {
-          node.setStateLampu(!node.getStateLampu);
+          // TODO: Publish control message lampu
+          setState(() {
+            node.setStateLampu(!node.getStateLampu);
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Sukses.'),
