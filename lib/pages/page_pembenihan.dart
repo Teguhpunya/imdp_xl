@@ -24,7 +24,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
-        children: _buildWidget(_state.getNodeTempModel),
+        children: _buildNodeList(_state.getNodeTempModel),
       ),
       floatingActionButton: ElevatedButton(
         onPressed: () => setState(() {
@@ -35,35 +35,35 @@ class _PagePembenihanState extends State<PagePembenihan> {
     );
   }
 
-  // Generate cards
-  Widget _buildCard(Widget child) {
-    return Card(
-      elevation: 4,
-      child: child,
-    );
+  // Generate list of nodes
+  List<Widget> _buildNodeList(NodeTempModel nodes) {
+    return List.generate(
+        nodes.getNodes.length, (index) => _buildCard(nodes.getNodes[index]));
   }
 
-  // Generate widget for cards
-  List<Widget> _buildWidget(NodeTempModel nodes) {
-    return List.generate(
-        nodes.getNodes.length,
-        (index) => _buildCard(
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Text("Kandang ${nodes.getNodes[index].getId}"),
-                      Text(
-                        "${nodes.getNodes[index].getSuhu}° C",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                _lampuButton(nodes.getNodes[index]),
-              ]),
-            ));
+  // Generate cards
+  Widget _buildCard(NodeTemp node) {
+    return Card(
+      elevation: 4,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Text("Kandang ${node.getId}"),
+              Text(
+                "${node.getSuhu}° C",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          child: Text("${node.getTimestamp}"),
+        ),
+        _lampuButton(node),
+      ]),
+    );
   }
 
   // Lampu button
