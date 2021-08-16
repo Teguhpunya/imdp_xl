@@ -1,4 +1,4 @@
-// import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,6 +43,8 @@ class _PagePembenihanState extends State<PagePembenihan> {
 
   // Generate cards
   Widget _buildCard(NodeTemp node) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
+    String timestamp = DateFormat('dd-MMM-yyyy H:mm').format(dateTime);
     return Card(
       elevation: 4,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -59,7 +61,11 @@ class _PagePembenihanState extends State<PagePembenihan> {
           ),
         ),
         Container(
-          child: Text("${node.getTimestamp}"),
+          width: 128,
+          child: Text(
+            "Terakhir update: \n$timestamp",
+            softWrap: true,
+          ),
         ),
         _lampuButton(node),
       ]),
