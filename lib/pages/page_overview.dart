@@ -19,8 +19,12 @@ class _OverviewPageState extends State<OverviewPage> {
   Widget build(BuildContext context) {
     _state = Provider.of<MQTTAppState>(context);
 
+    return _mainView(context);
+  }
+
+  ListView _mainView(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
       children: <Widget>[
         GestureDetector(
           onTap: () {

@@ -17,13 +17,27 @@ class MQTTAppState with ChangeNotifier {
     _receivedText = text;
     _historyText = _historyText + '\n' + _receivedText;
     if (_receivedText != '') {
-      var msg = jsonDecode(_receivedText);
-      NodeTemp node = NodeTemp(
-          id: msg["id"],
-          jenis: msg["jenis"],
-          suhu: msg["suhu"],
-          stateLampu: msg["stateLampu"]);
-      _nodeTempModel.modify(node);
+      Map<String, dynamic> msg = jsonDecode(_receivedText);
+      bool verified = false;
+
+      // Node untuk pembenihan
+      List requiredKeys = ["id", "jenis", "timestamp", "suhu", "stateLampu"];
+      for (var key in requiredKeys) {
+        verified = msg.containsKey(key);
+        if (!verified) {
+          print("teguhpunya:: Key missing!");
+          break;
+        }
+      }
+      if (verified) {
+        NodeTemp node = NodeTemp(
+            id: msg["id"],
+            jenis: msg["jenis"],
+            timestamp: msg["timestamp"],
+            suhu: msg["suhu"],
+            stateLampu: msg["stateLampu"]);
+        _nodeTempModel.modify(node);
+      }
     }
 
     notifyListeners();

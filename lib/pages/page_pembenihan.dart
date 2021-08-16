@@ -21,11 +21,17 @@ class _PagePembenihanState extends State<PagePembenihan> {
   Widget build(BuildContext context) {
     _state = Provider.of<MQTTAppState>(context);
 
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      children: [
-        Column(children: _buildWidget(_state.getNodeTempModel)),
-      ],
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+        children: _buildWidget(_state.getNodeTempModel),
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () => setState(() {
+          _state.getNodeTempModel.removeAll();
+        }),
+        child: Text("Remove all"),
+      ),
     );
   }
 

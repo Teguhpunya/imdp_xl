@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
       PagePetelur(),
     ];
     final MQTTAppState _state = Provider.of<MQTTAppState>(context);
-    final MqttWrapper _mqttWrapper = context.read<MqttWrapper>();
+    final MqttWrapper _mqttWrapper = Provider.of<MqttWrapper>(context);
     _mqttWrapper.setState(_state);
     _mqttWrapper.configAndConnect();
 
@@ -63,6 +63,15 @@ class HomePage extends StatelessWidget {
           body: const TabBarView(
             children: pages,
           ),
+          // floatingActionButton: ElevatedButton(
+          //     onPressed: (_state.getAppConnectionState !=
+          //             MQTTAppConnectionState.connected)
+          //         ? _mqttWrapper.configAndConnect
+          //         : null,
+          //     child: (_state.getAppConnectionState !=
+          //             MQTTAppConnectionState.connected)
+          //         ? Text("Sambungkan")
+          //         : Text("Tersambung")),
         ),
       ),
     );
