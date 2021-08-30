@@ -5,6 +5,7 @@ import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
 import 'package:imdp_xl/pages/page_pembenihan.dart';
 import 'package:imdp_xl/pages/page_petelur.dart';
+import 'package:imdp_xl/pages/page_settings.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -30,19 +31,24 @@ class HomePage extends StatelessWidget {
       OverviewPage(),
       PagePembenihan(),
       PagePetelur(),
+      SettingsPage(),
     ];
     final MQTTAppState _state = Provider.of<MQTTAppState>(context);
     final MqttWrapper _mqttWrapper = Provider.of<MqttWrapper>(context);
     _mqttWrapper.setState(_state);
-    _mqttWrapper.configAndConnect();
+    // _mqttWrapper.connect();
 
     return MaterialApp(
       home: DefaultTabController(
         length: pages.length,
         child: Scaffold(
           appBar: AppBar(
-            bottom: const TabBar(
+            title: const Text('Quailabs'),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            child: const TabBar(
               indicatorWeight: 6,
+              labelColor: Colors.black,
               tabs: [
                 Tab(
                   icon: Icon(FontAwesomeIcons.houseUser),
@@ -56,22 +62,16 @@ class HomePage extends StatelessWidget {
                   icon: Icon(FontAwesomeIcons.egg),
                   text: 'Petelur',
                 ),
+                Tab(
+                  icon: Icon(FontAwesomeIcons.wrench),
+                  text: 'Pengaturan',
+                ),
               ],
             ),
-            title: const Text('Qualidea'),
           ),
           body: const TabBarView(
             children: pages,
           ),
-          // floatingActionButton: ElevatedButton(
-          //     onPressed: (_state.getAppConnectionState !=
-          //             MQTTAppConnectionState.connected)
-          //         ? _mqttWrapper.configAndConnect
-          //         : null,
-          //     child: (_state.getAppConnectionState !=
-          //             MQTTAppConnectionState.connected)
-          //         ? Text("Sambungkan")
-          //         : Text("Tersambung")),
         ),
       ),
     );

@@ -33,6 +33,7 @@ dependencies:
   draw_graph: ^1.0.0
   mqtt_client: ^9.4.2
   intl: ^0.17.0
+  flutter_speed_dial: ^4.2.0
 
 dev_dependencies:
   flutter_test:

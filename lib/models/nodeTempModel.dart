@@ -2,14 +2,6 @@ import 'package:imdp_xl/models/node.dart';
 
 class NodeTempModel {
   final List<NodeTemp> _nodes = [];
-  // List.generate(
-  //     8,
-  //     (index) =>
-  //         NodeTemp(id: index + 1, jenis: "temp", suhu: 0, stateLampu: false));
-  // [
-  //   NodeTemp(id: 1, jenis: "temp", suhu: 0, stateLampu: false),
-  //   NodeTemp(id: 2, jenis: "temp", suhu: 0, stateLampu: false),
-  // ];
 
   void add(NodeTemp node) {
     _nodes.add(node);

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/models/model_node_temp.dart';
+import 'package:imdp_xl/models/nodePakanModel.dart';
+import 'package:imdp_xl/models/nodeTempModel.dart';
 import 'package:imdp_xl/appState.dart';
 import 'package:provider/provider.dart';
 
@@ -106,7 +107,8 @@ class _OverviewPageState extends State<OverviewPage> {
                         ),
                         SingleChildScrollView(
                           child: Row(
-                            children: _buildColumnsPetelur(2),
+                            children:
+                                _buildColumnsPetelur(_state.getNodePakanModel),
                           ),
                         )
                       ],
@@ -139,16 +141,16 @@ class _OverviewPageState extends State<OverviewPage> {
             ));
   }
 
-  List<Widget> _buildColumnsPetelur(int count) {
+  List<Widget> _buildColumnsPetelur(NodePakanModel node) {
     return List.generate(
-        count,
+        node.getNodes.length,
         (index) => Container(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: Column(
                 children: [
-                  Text("Kandang ${index + 1}"),
+                  Text("Kandang ${node.getNodes[index].getId}"),
                   Text(
-                    "Penuh",
+                    "${node.getNodes[index].getStatePakan}",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],

@@ -1,9 +1,10 @@
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/models/model_node_temp.dart';
+import 'package:imdp_xl/models/nodeTempModel.dart';
 import 'package:imdp_xl/models/node.dart';
 import 'package:provider/provider.dart';
 
@@ -22,17 +23,30 @@ class _PagePembenihanState extends State<PagePembenihan> {
     _state = Provider.of<MQTTAppState>(context);
 
     return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
-        children: _buildNodeList(_state.getNodeTempModel),
-      ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () => setState(() {
-          _state.getNodeTempModel.removeAll();
-        }),
-        child: Text("Remove all"),
-      ),
-    );
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+          children: _buildNodeList(_state.getNodeTempModel),
+        ),
+        floatingActionButton: SpeedDial(
+          children: [
+            SpeedDialChild(
+              child: Icon(FontAwesomeIcons.fileExport),
+              label: "Ekspor data",
+              onTap: () => setState(() {
+                // TODO: Export data
+              }),
+            ),
+            SpeedDialChild(
+              child: Icon(FontAwesomeIcons.fileExport),
+              label: "Matikan otomasi",
+              onTap: () => setState(() {
+                // TODO: Publish matikan otomasi pembenih
+                // _state.getNodeTempModel.removeAll();
+              }),
+            )
+          ],
+          child: Icon(FontAwesomeIcons.list),
+        ));
   }
 
   // Generate list of nodes
@@ -43,8 +57,8 @@ class _PagePembenihanState extends State<PagePembenihan> {
 
   // Generate cards
   Widget _buildCard(NodeTemp node) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
-    String timestamp = DateFormat('dd-MMM-yyyy H:mm').format(dateTime);
+    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
+    String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
     return Card(
       elevation: 4,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -63,7 +77,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
         Container(
           width: 128,
           child: Text(
-            "Terakhir update: \n$timestamp",
+            "Terakhir update: \n$_timestamp",
             softWrap: true,
           ),
         ),
