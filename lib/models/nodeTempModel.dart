@@ -1,7 +1,16 @@
+import 'dart:math';
+
 import 'package:imdp_xl/models/node.dart';
 
 class NodeTempModel {
-  final List<NodeTemp> _nodes = [];
+  final List<NodeTemp> _nodes = List.generate(
+      3,
+      (index) => NodeTemp(
+          id: index + 1,
+          jenis: "temp",
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+          suhu: 27 + Random().nextInt(31 - 27),
+          stateLampu: Random().nextBool()));
 
   void add(NodeTemp node) {
     _nodes.add(node);

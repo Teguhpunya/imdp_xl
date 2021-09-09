@@ -1,7 +1,17 @@
+import 'dart:math';
+
 import 'package:imdp_xl/models/node.dart';
 
 class NodePakanModel {
-  final List<NodePakan> _nodes = [];
+  final List<NodePakan> _nodes = List.generate(
+      3,
+      (index) => NodePakan(
+            id: index + 1,
+            jenis: "temp",
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+            statePakan: Random().nextBool(),
+            statePakanCadangan: Random().nextInt(2),
+          ));
 
   void add(NodePakan node) {
     _nodes.add(node);
