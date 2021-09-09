@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/models/nodeTempModel.dart';
+import 'package:imdp_xl/models/nodeSuhuModel.dart';
 import 'package:imdp_xl/models/node.dart';
 import 'package:provider/provider.dart';
 
@@ -50,13 +50,13 @@ class _PagePembenihanState extends State<PagePembenihan> {
   }
 
   // Generate list of nodes
-  List<Widget> _buildNodeList(NodeTempModel nodes) {
+  List<Widget> _buildNodeList(NodeSuhuModel nodes) {
     return List.generate(
         nodes.getNodes.length, (index) => _buildCard(nodes.getNodes[index]));
   }
 
   // Generate cards
-  Widget _buildCard(NodeTemp node) {
+  Widget _buildCard(NodeSuhu node) {
     DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
     return Card(
@@ -87,7 +87,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
   }
 
   // Lampu button
-  Widget _lampuButton(NodeTemp node) {
+  Widget _lampuButton(NodeSuhu node) {
     return ElevatedButton(
         style: ButtonStyle(
             fixedSize: MaterialStateProperty.resolveWith(

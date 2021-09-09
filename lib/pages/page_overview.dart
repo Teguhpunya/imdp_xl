@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/models/nodePakanModel.dart';
-import 'package:imdp_xl/models/nodeTempModel.dart';
+import 'package:imdp_xl/models/nodeSuhuModel.dart';
 import 'package:imdp_xl/appState.dart';
 import 'package:provider/provider.dart';
 
@@ -123,7 +123,7 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  List<Widget> _buildColumnsPembenih(NodeTempModel nodes) {
+  List<Widget> _buildColumnsPembenih(NodeSuhuModel nodes) {
     return List.generate(
         nodes.getNodes.length,
         (index) => Container(

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:imdp_xl/models/nodePakanModel.dart';
-import 'package:imdp_xl/models/nodeTempModel.dart';
+import 'package:imdp_xl/models/nodeSuhuModel.dart';
 import 'package:imdp_xl/models/node.dart';
 
 enum MQTTAppConnectionState { connected, disconnected, connecting }
@@ -12,7 +12,7 @@ class MQTTAppState with ChangeNotifier {
       MQTTAppConnectionState.disconnected;
   String _receivedText = '';
   String _historyText = '';
-  NodeTempModel _tempModel = NodeTempModel();
+  NodeSuhuModel _tempModel = NodeSuhuModel();
   NodePakanModel _pakanModel = NodePakanModel();
 
   void setReceivedText(String text) {
@@ -42,7 +42,7 @@ class MQTTAppState with ChangeNotifier {
             }
           }
           if (verified) {
-            NodeTemp node = NodeTemp(
+            NodeSuhu node = NodeSuhu(
                 id: msg["id"],
                 jenis: msg["jenis"],
                 timestamp: msg["timestamp"],
@@ -85,6 +85,6 @@ class MQTTAppState with ChangeNotifier {
   String get getReceivedText => _receivedText;
   String get getHistoryText => _historyText;
   MQTTAppConnectionState get getAppConnectionState => _appConnectionState;
-  NodeTempModel get getNodeTempModel => _tempModel;
+  NodeSuhuModel get getNodeTempModel => _tempModel;
   NodePakanModel get getNodePakanModel => _pakanModel;
 }

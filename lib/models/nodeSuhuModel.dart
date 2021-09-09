@@ -1,9 +1,9 @@
 import 'package:imdp_xl/models/node.dart';
 
-class NodeTempModel {
-  final List<NodeTemp> _nodes = [];
+class NodeSuhuModel {
+  List<NodeSuhu> _nodes = [];
 
-  void add(NodeTemp node) {
+  void add(NodeSuhu node) {
     _nodes.add(node);
   }
 
@@ -16,7 +16,7 @@ class NodeTempModel {
     _nodes.clear();
   }
 
-  void modify(NodeTemp node) {
+  void modify(NodeSuhu node) {
     int index = _nodes.indexWhere((e) => (e.getId == node.getId));
     if ((index != -1))
       _nodes[index] = node;
@@ -26,5 +26,5 @@ class NodeTempModel {
     }
   }
 
-  List<NodeTemp> get getNodes => _nodes;
+  List<NodeSuhu> get getNodes => _nodes;
 }
