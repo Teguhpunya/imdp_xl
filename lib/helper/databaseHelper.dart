@@ -77,10 +77,16 @@ class DatabaseHelper {
   updateSuhu(NodeSuhu node) async {
     final db = await database;
 
-    await db!.update(node.tablename, node.toMap(),
-        where: 'id = ?',
-        whereArgs: [node.getId],
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    var queryResult =
+        await db!.rawQuery('SELECT * FROM nodesuhu WHERE id = ?', [node.getId]);
+
+    if (queryResult.isNotEmpty) {
+      await db.update(node.tablename, node.toMap(),
+          where: 'id = ?',
+          whereArgs: [node.getId],
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } else
+      insertSuhu(node);
   }
 
   updatePakan(NodePakan node) async {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:imdp_xl/helper/databaseHelper.dart';
 import 'package:imdp_xl/models/nodePakanModel.dart';
 import 'package:imdp_xl/models/nodeSuhuModel.dart';
 import 'package:imdp_xl/models/node.dart';
@@ -12,7 +13,7 @@ class MQTTAppState with ChangeNotifier {
       MQTTAppConnectionState.disconnected;
   String _receivedText = '';
   String _historyText = '';
-  NodeSuhuModel _tempModel = NodeSuhuModel();
+  // NodeSuhuModel _tempModel = NodeSuhuModel();
   NodePakanModel _pakanModel = NodePakanModel();
 
   void setReceivedText(String text) {
@@ -48,7 +49,8 @@ class MQTTAppState with ChangeNotifier {
                 timestamp: msg["timestamp"],
                 suhu: msg["suhu"],
                 stateLampu: msg["stateLampu"]);
-            _tempModel.modify(node);
+            // _tempModel.modify(node);
+            DatabaseHelper.instance.updateSuhu(node);
           }
         }
 
@@ -85,6 +87,6 @@ class MQTTAppState with ChangeNotifier {
   String get getReceivedText => _receivedText;
   String get getHistoryText => _historyText;
   MQTTAppConnectionState get getAppConnectionState => _appConnectionState;
-  NodeSuhuModel get getNodeTempModel => _tempModel;
+  // NodeSuhuModel get getNodeTempModel => _tempModel;
   NodePakanModel get getNodePakanModel => _pakanModel;
 }
