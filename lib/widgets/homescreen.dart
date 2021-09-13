@@ -30,6 +30,7 @@ class HomeScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Quailabs'),
+            centerTitle: true,
           ),
           bottomNavigationBar: BottomAppBar(
             child: const TabBar(

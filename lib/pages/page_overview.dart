@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/helper/databaseHelper.dart';
+import 'package:imdp_xl/models/node.dart';
 import 'package:imdp_xl/models/nodePakanModel.dart';
 import 'package:imdp_xl/models/nodeSuhuModel.dart';
 import 'package:imdp_xl/appState.dart';
@@ -61,14 +63,11 @@ class _OverviewPageState extends State<OverviewPage> {
                             padding: EdgeInsets.all(8),
                             child: Text("Suhu"),
                           ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: _buildColumnsPembenih(
-                                  _state.getNodeTempModel),
-                            ),
-                          )
+                          Container(
+                            constraints: BoxConstraints(maxHeight: 48),
+                            // height: 48,
+                            child: _listPembenihan(),
+                          ),
                         ],
                       ),
                     ),
@@ -123,22 +122,37 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  List<Widget> _buildColumnsPembenih(NodeSuhuModel nodes) {
-    return List.generate(
-        nodes.getNodes.length,
-        (index) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Column(
-                children: [
-                  Text("Kandang ${nodes.getNodes[index].getId}"),
-                  Text(
-                    "${nodes.getNodes[index].getSuhu}° C",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+  FutureBuilder<List<NodeSuhu>> _listPembenihan() {
+    return FutureBuilder<List<NodeSuhu>>(
+      future: DatabaseHelper.instance.retrieveNodeSuhuList(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                var data = snapshot.data;
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Column(
+                    children: [
+                      Text("Kandang ${data[index].getId}"),
+                      Text(
+                        "${data[index].getSuhu}° C",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((data[index].getStateLampu == 0) ? "Mati" : "Nyala")
+                    ],
                   ),
-                  Text("${nodes.getNodes[index].getStateLampu}")
-                ],
-              ),
-            ));
+                );
+              });
+        } else if (snapshot.hasError) {
+          return Text("Oops");
+        }
+
+        return Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   List<Widget> _buildColumnsPetelur(NodePakanModel node) {
