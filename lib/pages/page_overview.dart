@@ -90,7 +90,7 @@ class _OverviewPageState extends State<OverviewPage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 32),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Container(
@@ -104,11 +104,10 @@ class _OverviewPageState extends State<OverviewPage> {
                         SizedBox(
                           height: 8,
                         ),
-                        SingleChildScrollView(
-                          child: Row(
-                            children:
-                                _buildColumnsPetelur(_state.getNodePakanModel),
-                          ),
+                        Container(
+                          constraints: BoxConstraints(maxHeight: 48),
+                          // height: 48,
+                          child: _listPetelur(),
                         )
                       ],
                     ),
@@ -127,11 +126,11 @@ class _OverviewPageState extends State<OverviewPage> {
       future: DatabaseHelper.instance.retrieveNodeSuhuList(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          var data = snapshot.data;
           return ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data.length,
+              itemCount: data.length,
               itemBuilder: (BuildContext context, int index) {
-                var data = snapshot.data;
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 4),
                   child: Column(
@@ -170,5 +169,37 @@ class _OverviewPageState extends State<OverviewPage> {
                 ],
               ),
             ));
+  }
+
+  FutureBuilder<List<NodePakan>> _listPetelur() {
+    return FutureBuilder<List<NodePakan>>(
+      future: DatabaseHelper.instance.retrieveNodePakanList(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data;
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: data.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: Column(
+                  children: [
+                    Text("Kandang ${data[index].getId}"),
+                    Text(
+                      "${data[index].getStatePakan}",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Text("Oops");
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
   }
 }

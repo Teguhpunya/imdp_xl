@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:imdp_xl/helper/databaseHelper.dart';
-import 'package:imdp_xl/models/nodePakanModel.dart';
-import 'package:imdp_xl/models/nodeSuhuModel.dart';
 import 'package:imdp_xl/models/node.dart';
 
 enum MQTTAppConnectionState { connected, disconnected, connecting }
@@ -14,7 +12,14 @@ class MQTTAppState with ChangeNotifier {
   String _receivedText = '';
   String _historyText = '';
   // NodeSuhuModel _tempModel = NodeSuhuModel();
-  NodePakanModel _pakanModel = NodePakanModel();
+  // NodePakanModel _pakanModel = NodePakanModel();
+  // Future<List<NodeSuhu>> _nodeSuhu =
+  //     DatabaseHelper.instance.retrieveNodeSuhuList();
+
+  Future<List<NodeSuhu>> _nodeSuhu =
+      DatabaseHelper.instance.retrieveNodeSuhuList();
+  Future<List<NodePakan>> _nodePakan =
+      DatabaseHelper.instance.retrieveNodePakanList();
 
   void setReceivedText(String text) {
     _receivedText = text;
@@ -25,7 +30,7 @@ class MQTTAppState with ChangeNotifier {
 
       List _requiredKeysCommon = ["id", "jenis", "timestamp"];
       List _requiredKeysPembenih = ["suhu", "stateLampu"];
-      List _requiredKeysPetelur = ["statePakan"];
+      List _requiredKeysPetelur = ["statePakan", "statePakanCadangan"];
 
       for (var key in _requiredKeysCommon) {
         if (!msg.containsKey(key)) {
@@ -70,7 +75,7 @@ class MQTTAppState with ChangeNotifier {
                 timestamp: msg["timestamp"],
                 statePakan: msg["statePakan"],
                 statePakanCadangan: msg["statePakanCadangan"]);
-            _pakanModel.modify(node);
+            DatabaseHelper.instance.updatePakan(node);
           }
         }
       }
@@ -88,5 +93,7 @@ class MQTTAppState with ChangeNotifier {
   String get getHistoryText => _historyText;
   MQTTAppConnectionState get getAppConnectionState => _appConnectionState;
   // NodeSuhuModel get getNodeTempModel => _tempModel;
-  NodePakanModel get getNodePakanModel => _pakanModel;
+  // NodePakanModel get getNodePakanModel => _pakanModel;
+  Future<List<NodeSuhu>> get getNodeSuhuList => _nodeSuhu;
+  Future<List<NodePakan>> get getNodePakanList => _nodePakan;
 }

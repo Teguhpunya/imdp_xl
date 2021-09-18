@@ -1,10 +1,10 @@
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/helper/databaseHelper.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/models/node.dart';
 import 'package:provider/provider.dart';
 
@@ -16,8 +16,11 @@ class PagePembenihan extends StatefulWidget {
 }
 
 class _PagePembenihanState extends State<PagePembenihan> {
+  var listItems = DatabaseHelper.instance.retrieveNodeSuhuList();
+
   @override
   Widget build(BuildContext context) {
+    // listItems = Provider.of<MQTTAppState>(context).getNodeSuhuList;
     return Scaffold(
       floatingActionButton: SpeedDial(
         children: [
@@ -43,8 +46,8 @@ class _PagePembenihanState extends State<PagePembenihan> {
       //   padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
       //   children: _buildNodeList(_state.getNodeTempModel),
       // ),
-      body: FutureBuilder<List<NodeSuhu>>(
-        future: DatabaseHelper.instance.retrieveNodeSuhuList(),
+      body: FutureBuilder(
+        future: listItems,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
@@ -95,7 +98,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
           ),
         ),
         Container(
-          width: 128,
+          constraints: BoxConstraints(maxWidth: 128),
           child: Text(
             "Terakhir update: \n$_timestamp",
             softWrap: true,
@@ -114,24 +117,17 @@ class _PagePembenihanState extends State<PagePembenihan> {
             fixedSize: MaterialStateProperty.resolveWith(
                 (states) => Size.fromWidth(128)),
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                (stateLampu == StateLampu.nyala.index)
-                    ? Colors.yellow.shade800
-                    : Colors.indigo)),
+                (stateLampu == 1) ? Colors.yellow.shade800 : Colors.indigo)),
         onPressed: () {
           // TODO: Publish control message lampu
+          Future.delayed(Duration(seconds: 4));
           switchLampu(node, stateLampu);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sukses.'),
-              duration: Duration(milliseconds: 500),
-            ),
-          );
         },
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              Icon((stateLampu == StateLampu.nyala.index)
+              Icon((stateLampu == 1)
                   ? FontAwesomeIcons.solidLightbulb
                   : FontAwesomeIcons.lightbulb),
               SizedBox(
@@ -139,7 +135,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
               ),
               Text("Lampu"),
               Text(
-                (stateLampu == StateLampu.nyala.index) ? "Menyala" : "Mati",
+                (stateLampu == 1) ? "Menyala" : "Mati",
                 style: TextStyle(fontWeight: FontWeight.bold),
               )
             ],
@@ -151,6 +147,12 @@ class _PagePembenihanState extends State<PagePembenihan> {
     setState(() {
       node.setStateLampu(1 - stateLampu);
       DatabaseHelper.instance.updateSuhu(node);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sukses.'),
+          duration: Duration(milliseconds: 500),
+        ),
+      );
     });
   }
 }

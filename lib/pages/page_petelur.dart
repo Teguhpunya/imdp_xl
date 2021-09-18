@@ -3,12 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/models/node.dart';
-import 'package:imdp_xl/models/nodePakanModel.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 // import 'package:imdp_xl/appState.dart';
+import 'package:imdp_xl/helper/databaseHelper.dart';
+import 'package:imdp_xl/models/node.dart';
+import 'package:intl/intl.dart';
+// import 'package:provider/provider.dart';
 
 class PagePetelur extends StatefulWidget {
   const PagePetelur({Key? key}) : super(key: key);
@@ -19,11 +18,11 @@ class PagePetelur extends StatefulWidget {
 
 class _PagePetelurState extends State<PagePetelur> {
   // late MQTTAppState _state = Provider.of<MQTTAppState>(context);
-  late MQTTAppState _state;
+  // late MQTTAppState _state;
 
   @override
   Widget build(BuildContext context) {
-    _state = Provider.of<MQTTAppState>(context);
+    // _state = Provider.of<MQTTAppState>(context);
 
     return Scaffold(
       floatingActionButton: SpeedDial(
@@ -40,22 +39,34 @@ class _PagePetelurState extends State<PagePetelur> {
             label: "Matikan otomasi",
             onTap: () => setState(() {
               // TODO: Publish matikan otomasi pembenih
-              // _state.getNodeTempModel.removeAll();
             }),
           )
         ],
         child: Icon(FontAwesomeIcons.list),
       ),
-      body: ListView(
-          padding: const EdgeInsets.all(8),
-          children: _buildNodeList(_state.getNodePakanModel)),
+      // body: ListView(
+      //     padding: const EdgeInsets.all(8),
+      //     children: _buildNodeList(_state.getNodePakanModel)),
+      body: FutureBuilder<List<NodePakan>>(
+        future: DatabaseHelper.instance.retrieveNodePakanList(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data;
+            return ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _buildCard(data[index]);
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text("Oops"),
+            );
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
     );
-  }
-
-  // Generate list of nodes
-  List<Widget> _buildNodeList(NodePakanModel nodes) {
-    return List.generate(
-        nodes.getNodes.length, (index) => _buildCard(nodes.getNodes[index]));
   }
 
   // Generate Card
@@ -63,37 +74,38 @@ class _PagePetelurState extends State<PagePetelur> {
     DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
 
-    int id = node.getId;
     return Card(
+      elevation: 4,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text("Kandang $id"),
+            child: Text("Kandang ${node.getId}"),
           ),
           Container(
             child: Text("Terakhir update: \n$_timestamp"),
           ),
-          pakanButton(node)
+          _pakanButton(node)
         ],
       ),
     );
   }
 
   // Pakan button
-  Widget pakanButton(NodePakan node) {
-    bool _statePakan = node.getStatePakan;
+  Widget _pakanButton(NodePakan node) {
+    int statePakan = node.getStatePakan;
     return ElevatedButton(
         style: ButtonStyle(
             fixedSize: MaterialStateProperty.resolveWith(
                 (states) => Size.fromWidth(128))),
         //     backgroundColor: MaterialStateProperty.resolveWith((states) =>
         //         (!_statePakan) ? Colors.redAccent.shade700 : Colors.grey)),
-        onPressed: (!_statePakan)
+        onPressed: (statePakan == 0)
             ? () {
                 setState(() {
-                  node.setStatePakan(!_statePakan);
+                  node.setStatePakan(1);
+                  DatabaseHelper.instance.updatePakan(node);
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -111,7 +123,7 @@ class _PagePetelurState extends State<PagePetelur> {
                 height: 16,
               ),
               // Text("Isi Pakan"),
-              (_statePakan) ? Text("Penuh") : Text("Kosong"),
+              (statePakan == 0) ? Text("Kosong") : Text("Penuh"),
             ],
           ),
         ));

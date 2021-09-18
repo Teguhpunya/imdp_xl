@@ -11,8 +11,6 @@ abstract class Node {
   int get getTimestamp => this._timestamp;
 }
 
-enum StateLampu { mati, nyala }
-
 class NodeSuhu extends Node {
   final int suhu;
   int stateLampu;
@@ -45,7 +43,7 @@ class NodeSuhu extends Node {
 }
 
 class NodePakan extends Node {
-  bool statePakan;
+  int statePakan;
   int statePakanCadangan;
 
   NodePakan(
@@ -56,7 +54,7 @@ class NodePakan extends Node {
       required this.statePakanCadangan})
       : super("nodepakan", id, jenis, timestamp);
 
-  void setStatePakan(bool state) {
+  void setStatePakan(int state) {
     statePakan = state;
   }
 
@@ -64,7 +62,7 @@ class NodePakan extends Node {
     statePakanCadangan = state;
   }
 
-  bool get getStatePakan => statePakan;
+  int get getStatePakan => statePakan;
 
   Map<String, Object?> toMap() {
     return {
