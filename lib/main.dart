@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:imdp_xl/helper/databaseHelper.dart';
-import 'package:provider/provider.dart';
-import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/mqtt/mqttWrapper.dart';
 import 'package:imdp_xl/widgets/homescreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(MyApp());
 }
 
-class MyApp extends MultiProvider {
-  MyApp()
-      : super(
-          providers: [
-            ChangeNotifierProvider<MQTTAppState>(
-              create: (_) => MQTTAppState(),
-            ),
-            ChangeNotifierProvider<MqttWrapper>(create: (_) => MqttWrapper()),
-          ],
-          child: MaterialApp(
-            title: 'Quaildea',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: const HomeScreen(),
-          ),
-        );
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Quaildea',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const HomeScreen(),
+    );
+  }
 }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "985540641872",
+    "firebase_url": "https://quaildea-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "quaildea",
+    "storage_bucket": "quaildea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985540641872:android:753ba360984c65078c3d55",
+        "android_client_info": {
+          "package_name": "com.example.imdp_xl.quaildea"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985540641872-ae4qs5lpobs3ut2pmhft5f1uffmk4kqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRAgCaYiNU7KZeNFsYnDrQohkoiLaQH7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985540641872-ae4qs5lpobs3ut2pmhft5f1uffmk4kqo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

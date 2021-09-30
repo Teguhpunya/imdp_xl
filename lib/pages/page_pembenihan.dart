@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:imdp_xl/appState.dart';
 import 'package:imdp_xl/helper/databaseHelper.dart';
@@ -16,71 +18,66 @@ class PagePembenihan extends StatefulWidget {
 }
 
 class _PagePembenihanState extends State<PagePembenihan> {
-  var listItems = DatabaseHelper.instance.retrieveNodeSuhuList();
+  final dbRef = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
-    // listItems = Provider.of<MQTTAppState>(context).getNodeSuhuList;
     return Scaffold(
-      floatingActionButton: SpeedDial(
-        children: [
-          SpeedDialChild(
-            child: Icon(FontAwesomeIcons.fileExport),
-            label: "Ekspor data",
-            onTap: () => setState(() {
-              // TODO: Export data
-            }),
-          ),
-          SpeedDialChild(
-            child: Icon(FontAwesomeIcons.fileExport),
-            label: "Matikan otomasi",
-            onTap: () => setState(() {
-              // TODO: Publish matikan otomasi pembenih
-              // _state.getNodeTempModel.removeAll();
-            }),
-          )
-        ],
-        child: Icon(FontAwesomeIcons.list),
-      ),
-      // body: ListView(
-      //   padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
-      //   children: _buildNodeList(_state.getNodeTempModel),
-      // ),
-      body: FutureBuilder(
-        future: listItems,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildCard(snapshot.data[index]);
-                // ListTile(
-                //   title: Text(snapshot.data[index].title),
-                //   leading: Text(snapshot.data[index].id.toString()),
-                //   subtitle: Text(snapshot.data[index].content),
-                //   onTap: () => _navigateToDetail(context, snapshot.data[index]),
-                //   trailing: IconButton(
-                //       alignment: Alignment.center,
-                //       icon: Icon(Icons.delete),
-                //       onPressed: () async {
-                //         _deleteTodo(snapshot.data[index]);
-                //         setState(() {});
-                //       }),
-                // );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Text("Oops!");
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+        floatingActionButton: SpeedDial(
+          children: [
+            SpeedDialChild(
+              child: Icon(FontAwesomeIcons.fileExport),
+              label: "Ekspor data",
+              onTap: () => setState(() {
+                // TODO: Export data
+              }),
+            ),
+            SpeedDialChild(
+              child: Icon(FontAwesomeIcons.fileExport),
+              label: "Matikan otomasi",
+              onTap: () => setState(() {
+                // TODO: Publish matikan otomasi pembenih
+                // _state.getNodeTempModel.removeAll();
+              }),
+            )
+          ],
+          child: Icon(FontAwesomeIcons.list),
+        ),
+        // body: ListView(
+        //   padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+        //   children: _buildNodeList(_state.getNodeTempModel),
+        // ),
+        body: FirebaseAnimatedList(
+            query: dbRef.child('suhu'),
+            defaultChild: Center(
+              child: loading(),
+            ),
+            itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                Animation<double> animation, int index) {
+              return SizeTransition(
+                sizeFactor: animation,
+                child: _buildCard(snapshot),
+              );
+            }));
+  }
+
+  Column loading() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircularProgressIndicator(),
+        SizedBox(
+          height: 18,
+        ),
+        Text("Loading data / sedang offline"),
+      ],
     );
   }
 
   // Generate cards
-  Widget _buildCard(NodeSuhu node) {
-    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
+  Widget _buildCard(DataSnapshot item) {
+    DateTime _dateTime =
+        DateTime.fromMillisecondsSinceEpoch(item.value['timestamp']);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
     return Card(
       elevation: 4,
@@ -89,9 +86,13 @@ class _PagePembenihanState extends State<PagePembenihan> {
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Text("Kandang ${node.getId}"),
+              Text("Kandang ${item.key}"),
               Text(
-                "${node.getSuhu}° C",
+                "${item.value['suhu1']}° C",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "${item.value['suhu2']}° C",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
@@ -104,14 +105,14 @@ class _PagePembenihanState extends State<PagePembenihan> {
             softWrap: true,
           ),
         ),
-        _lampuButton(node),
+        _lampuButton(item),
       ]),
     );
   }
 
   // Lampu button
-  Widget _lampuButton(NodeSuhu node) {
-    int stateLampu = node.getStateLampu;
+  Widget _lampuButton(DataSnapshot item) {
+    int stateLampu = item.value['lampu'];
     return ElevatedButton(
         style: ButtonStyle(
             fixedSize: MaterialStateProperty.resolveWith(
@@ -121,7 +122,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
         onPressed: () {
           // TODO: Publish control message lampu
           Future.delayed(Duration(seconds: 4));
-          switchLampu(node, stateLampu);
+          switchLampu(item, stateLampu);
         },
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -143,13 +144,16 @@ class _PagePembenihanState extends State<PagePembenihan> {
         ));
   }
 
-  void switchLampu(NodeSuhu node, int stateLampu) {
+  void switchLampu(DataSnapshot item, int stateLampu) {
     setState(() {
-      node.setStateLampu(1 - stateLampu);
-      DatabaseHelper.instance.updateSuhu(node);
+      int switchLampu = 1 - stateLampu;
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+      dbRef
+          .child('/suhu/${item.key}')
+          .update({'lampu': switchLampu, 'timestamp': timestamp});
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sukses.'),
+        SnackBar(
+          content: Text('Sukses. Lampu = ${switchLampu}'),
           duration: Duration(milliseconds: 500),
         ),
       );

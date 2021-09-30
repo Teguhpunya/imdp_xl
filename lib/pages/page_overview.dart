@@ -1,12 +1,11 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/helper/databaseHelper.dart';
 import 'package:imdp_xl/models/node.dart';
 import 'package:imdp_xl/models/nodePakanModel.dart';
-import 'package:imdp_xl/models/nodeSuhuModel.dart';
-import 'package:imdp_xl/appState.dart';
-import 'package:provider/provider.dart';
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({Key? key}) : super(key: key);
@@ -16,65 +15,53 @@ class OverviewPage extends StatefulWidget {
 }
 
 class _OverviewPageState extends State<OverviewPage> {
-  late MQTTAppState _state;
+  final dbRef = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
-    _state = Provider.of<MQTTAppState>(context);
-
-    return _mainView(context);
+    return _mainView();
   }
 
-  ListView _mainView(BuildContext context) {
+  ListView _mainView() {
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
       children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('A SnackBar has been shown.'),
+        Container(
+          padding: EdgeInsets.all(16),
+          color: Colors.amberAccent,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 32),
+                child: Text(
+                  'Kandang Pembenihan',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.amberAccent,
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: 32),
-                  child: Text(
-                    'Kandang Pembenihan',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      child: Column(
-                        children: [
-                          Icon(FontAwesomeIcons.temperatureHigh),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Text("Suhu"),
-                          ),
-                          Container(
-                            constraints: BoxConstraints(maxHeight: 48),
-                            // height: 48,
-                            child: _listPembenihan(),
-                          ),
-                        ],
-                      ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        Icon(FontAwesomeIcons.temperatureHigh),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text("Suhu"),
+                        ),
+                        Container(
+                          constraints: BoxConstraints(maxHeight: 64),
+                          child: _listPembenihan(),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         SizedBox(
@@ -104,11 +91,11 @@ class _OverviewPageState extends State<OverviewPage> {
                         SizedBox(
                           height: 8,
                         ),
-                        Container(
-                          constraints: BoxConstraints(maxHeight: 48),
-                          // height: 48,
-                          child: _listPetelur(),
-                        )
+                        // Container(
+                        //   constraints: BoxConstraints(maxHeight: 48),
+                        //   // height: 48,
+                        //   child: _listPetelur(),
+                        // )
                       ],
                     ),
                   ),
@@ -121,36 +108,42 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  FutureBuilder<List<NodeSuhu>> _listPembenihan() {
-    return FutureBuilder<List<NodeSuhu>>(
-      future: DatabaseHelper.instance.retrieveNodeSuhuList(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          var data = snapshot.data;
-          return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4),
-                  child: Column(
-                    children: [
-                      Text("Kandang ${data[index].getId}"),
-                      Text(
-                        "${data[index].getSuhu}° C",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text((data[index].getStateLampu == 0) ? "Mati" : "Nyala")
-                    ],
+  Widget _listPembenihan() {
+    return FirebaseAnimatedList(
+        scrollDirection: Axis.horizontal,
+        defaultChild: loading(),
+        query: dbRef.child('suhu'),
+        itemBuilder: (BuildContext context, DataSnapshot snapshot,
+            Animation<double> animation, int index) {
+          return SizeTransition(
+            sizeFactor: animation,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Column(
+                children: [
+                  Text("Kandang ${snapshot.key}"),
+                  Text(
+                    "${snapshot.value['suhu1']}° C",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                );
-              });
-        } else if (snapshot.hasError) {
-          return Text("Oops");
-        }
+                  Text(
+                    "${snapshot.value['suhu2']}° C",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text((snapshot.value['lampu'] == 0) ? "Mati" : "Nyala")
+                ],
+              ),
+            ),
+          );
+        });
+  }
 
-        return Center(child: CircularProgressIndicator());
-      },
+  Column loading() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Loading data / sedang offline"),
+      ],
     );
   }
 
