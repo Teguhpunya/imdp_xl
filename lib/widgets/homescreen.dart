@@ -14,14 +14,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  TabController? _tabController;
-
   static List<Widget> pages = [
     OverviewPage(),
     PagePembenihan(),
     PagePetelur(),
     // SettingsPage(),
   ];
+
+  TabController? _tabController;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController!.dispose();
+  }
 
   @override
   void initState() {
@@ -31,17 +37,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       length: pages.length,
       vsync: this,
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController!.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return quaildeaApp(context);
   }
 
   Widget quaildeaApp(BuildContext context) {
@@ -60,9 +55,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             FontAwesomeIcons.earlybirds,
             FontAwesomeIcons.egg
           ],
+          textStyle: TextStyle(fontWeight: FontWeight.bold),
           tabIconColor: Colors.blue[600],
-          tabIconSize: 28.0,
-          tabIconSelectedSize: 26.0,
           tabSelectedColor: Colors.blue[900],
           tabIconSelectedColor: Colors.white,
           tabBarColor: Colors.white,
@@ -72,30 +66,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             });
           },
         ),
-        // BottomAppBar(
-        //   child: const TabBar(
-        //     indicatorWeight: 6,
-        //     labelColor: Colors.black,
-        //     tabs: [
-        //       Tab(
-        //         icon: Icon(FontAwesomeIcons.houseUser),
-        //         text: 'Overview',
-        //       ),
-        //       Tab(
-        //         icon: Icon(FontAwesomeIcons.earlybirds),
-        //         text: 'Pembenihan',
-        //       ),
-        //       Tab(
-        //         icon: Icon(FontAwesomeIcons.egg),
-        //         text: 'Petelur',
-        //       ),
-        //       // Tab(
-        //       //   icon: Icon(FontAwesomeIcons.wrench),
-        //       //   text: 'Pengaturan',
-        //       // ),
-        //     ],
-        //   ),
-        // ),
         body: TabBarView(
           physics:
               NeverScrollableScrollPhysics(), // swipe navigation handling is not supported
@@ -104,5 +74,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return quaildeaApp(context);
   }
 }
