@@ -14,37 +14,28 @@ class OverviewPage extends StatefulWidget {
 class _OverviewPageState extends State<OverviewPage> {
   final dbRef = FirebaseDatabase.instance.reference();
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(child: _mainView());
-  }
-
   ListView _mainView() {
     return ListView(
-      // padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+      padding: const EdgeInsets.only(bottom: 64),
       children: <Widget>[
         mainContainer(
           Colors.amberAccent,
           Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 32),
-                child: Text(
-                  'Kandang Pembenihan',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+              Icon(FontAwesomeIcons.earlybirds),
+              SizedBox(
+                height: 16,
               ),
-              Column(
-                children: [
-                  Icon(FontAwesomeIcons.temperatureHigh),
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text("Suhu"),
-                  ),
-                ],
+              Text(
+                'Kandang Pembenihan',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 16,
               ),
               Container(
-                constraints: BoxConstraints(maxHeight: 64),
+                constraints: BoxConstraints(maxHeight: 96),
+                color: Color.fromARGB(50, 99, 99, 99),
                 child: _listPembenihan(),
               ),
             ],
@@ -54,47 +45,47 @@ class _OverviewPageState extends State<OverviewPage> {
           Colors.greenAccent,
           Column(
             children: [
+              Icon(FontAwesomeIcons.egg),
+              SizedBox(
+                height: 16,
+              ),
               Text(
                 'Kandang Petelur',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 32),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        Icon(Icons.fastfood_rounded),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Text("Status tempat pakan"),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(maxHeight: 64),
-                          child: _listPetelur(),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
+              SizedBox(height: 16),
+              Container(
+                constraints: BoxConstraints(maxHeight: 96),
+                color: Color.fromARGB(50, 99, 99, 99),
+                child: _listPetelur(),
               ),
             ],
           ),
-        )
+        ),
+        mainContainer(
+            Colors.blue,
+            Container(
+              height: 128,
+              child: Center(
+                child: Text(
+                  'Coming Soon',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+              ),
+            )),
       ],
     );
   }
 
-  Container mainContainer(Color? color, Widget? child) {
-    return Container(
+  Widget mainContainer(Color? color, Widget? child) {
+    return Card(
       margin: EdgeInsets.all(8),
-      padding: EdgeInsets.all(16),
+      elevation: 4,
       color: color,
-      child: child,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: child,
+      ),
     );
   }
 
@@ -107,25 +98,56 @@ class _OverviewPageState extends State<OverviewPage> {
             Animation<double> animation, int index) {
           return SizeTransition(
             sizeFactor: animation,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Text("Kandang ${snapshot.key}"),
-                  Text(
-                    "${snapshot.value['suhu1']}° C",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "${snapshot.value['suhu2']}° C",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text((snapshot.value['lampu'] == 0) ? "Mati" : "Nyala")
-                ],
-              ),
-            ),
+            child: _cardItemPembenihan(snapshot),
           );
         });
+  }
+
+  Widget _cardItemPembenihan(DataSnapshot snapshot) {
+    return Card(
+      elevation: 4,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Kandang ${snapshot.key}"),
+            Text(
+              "${snapshot.value['suhu1']}° C",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "${snapshot.value['suhu2']}° C",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text((snapshot.value['lampu'] == 0) ? "Mati" : "Nyala")
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _cardItemPetelur(DataSnapshot snapshot) {
+    return Card(
+      elevation: 4,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Kandang ${snapshot.key}"),
+            Text(
+              statusPakan(snapshot.value['pakan']),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              statusPakanCadang(snapshot.value['pakanCadang']),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Column loading() {
@@ -144,22 +166,7 @@ class _OverviewPageState extends State<OverviewPage> {
         defaultChild: loading(),
         itemBuilder: (BuildContext context, DataSnapshot snapshot,
             Animation<double> animation, int index) {
-          return Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                Text("Kandang ${snapshot.key}"),
-                Text(
-                  statusPakan(snapshot.value['pakan']),
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  statusPakanCadang(snapshot.value['pakanCadang']),
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          );
+          return _cardItemPetelur(snapshot);
         });
   }
 
@@ -181,5 +188,10 @@ class _OverviewPageState extends State<OverviewPage> {
       default:
         return 'Kosong';
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(child: _mainView());
   }
 }
