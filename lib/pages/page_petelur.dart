@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,99 +19,126 @@ class PagePetelur extends StatefulWidget {
 }
 
 class _PagePetelurState extends State<PagePetelur> {
-  // late MQTTAppState _state = Provider.of<MQTTAppState>(context);
-  // late MQTTAppState _state;
+  final dbRef = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
-    // _state = Provider.of<MQTTAppState>(context);
+    return SafeArea(
+      child: _mainView(),
+    );
+  }
 
+  Widget _mainView() {
     return Scaffold(
-      floatingActionButton: SpeedDial(
-        children: [
-          SpeedDialChild(
-            child: Icon(FontAwesomeIcons.fileExport),
-            label: "Ekspor data",
-            onTap: () => setState(() {
-              // TODO: Export data
-            }),
-          ),
-          SpeedDialChild(
-            child: Icon(FontAwesomeIcons.fileExport),
-            label: "Matikan otomasi",
-            onTap: () => setState(() {
-              // TODO: Publish matikan otomasi pembenih
-            }),
-          )
-        ],
-        child: Icon(FontAwesomeIcons.list),
-      ),
-      // body: ListView(
-      //     padding: const EdgeInsets.all(8),
-      //     children: _buildNodeList(_state.getNodePakanModel)),
-      body: FutureBuilder<List<NodePakan>>(
-        future: DatabaseHelper.instance.retrieveNodePakanList(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            var data = snapshot.data;
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildCard(data[index]);
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text("Oops"),
-            );
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+      // floatingActionButton: SpeedDial(
+      //   children: [
+      //     SpeedDialChild(
+      //       child: Icon(FontAwesomeIcons.fileExport),
+      //       label: "Ekspor data",
+      //       onTap: () => setState(() {
+      //         // TODO: Export data
+      //       }),
+      //     ),
+      //     SpeedDialChild(
+      //       child: Icon(FontAwesomeIcons.fileExport),
+      //       label: "Matikan otomasi",
+      //       onTap: () => setState(() {
+      //         // TODO: Publish matikan otomasi pembenih
+      //       }),
+      //     )
+      //   ],
+      //   child: Icon(FontAwesomeIcons.list),
+      // ),
+      body: FirebaseAnimatedList(
+          query: dbRef.child('pakan'),
+          defaultChild: loading(),
+          itemBuilder: (context, snapshot, animation, index) {
+            return SizeTransition(
+                sizeFactor: animation, child: _buildCard(snapshot));
+          }),
+    );
+  }
+
+  Column loading() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircularProgressIndicator(),
+        SizedBox(
+          height: 18,
+        ),
+        Text("Loading data / sedang offline"),
+      ],
     );
   }
 
   // Generate Card
-  Widget _buildCard(NodePakan node) {
-    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(node.getTimestamp);
+  Widget _buildCard(DataSnapshot item) {
+    DateTime _dateTime =
+        DateTime.fromMillisecondsSinceEpoch(item.value['timestamp']);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
+
+    int pakanCadang = item.value['pakanCadang'];
 
     return Card(
       elevation: 4,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text("Kandang ${node.getId}"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text("Kandang ${item.key}"),
+              ),
+              Container(
+                child: Text("Terakhir update: \n$_timestamp"),
+              ),
+              _pakanButton(item)
+            ],
           ),
-          Container(
-            child: Text("Terakhir update: \n$_timestamp"),
-          ),
-          _pakanButton(node)
+          cekPakanCadang(pakanCadang)
         ],
       ),
     );
   }
 
+  Widget cekPakanCadang(int pakanCadang) {
+    switch (pakanCadang) {
+      case 1:
+        return Container(
+            width: MediaQuery.of(context).size.width,
+            color: Colors.yellow,
+            child: Center(child: Text('Cadangan pakan: Sedang')));
+      case 2:
+        return Text('Cadangan pakan: Penuh');
+      default:
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          color: Colors.red[200],
+          child: Center(child: Text('Cadangan pakan: Kosong')),
+        );
+    }
+  }
+
   // Pakan button
-  Widget _pakanButton(NodePakan node) {
-    int statePakan = node.getStatePakan;
+  Widget _pakanButton(item) {
+    int statePakan = item.value['pakan'];
     return ElevatedButton(
         style: ButtonStyle(
             fixedSize: MaterialStateProperty.resolveWith(
                 (states) => Size.fromWidth(128))),
-        //     backgroundColor: MaterialStateProperty.resolveWith((states) =>
-        //         (!_statePakan) ? Colors.redAccent.shade700 : Colors.grey)),
         onPressed: (statePakan == 0)
             ? () {
                 setState(() {
-                  node.setStatePakan(1);
-                  DatabaseHelper.instance.updatePakan(node);
+                  statePakan = 1;
+                  dbRef
+                      .child('/pakan/${item.key}')
+                      .update({'pakan': statePakan});
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Sukses.'),
+                  SnackBar(
+                      content: Text('Sukses. Pakan: $statePakan'),
                       duration: Duration(milliseconds: 500)),
                 );
               }
@@ -122,7 +151,6 @@ class _PagePetelurState extends State<PagePetelur> {
               SizedBox(
                 height: 16,
               ),
-              // Text("Isi Pakan"),
               (statePakan == 0) ? Text("Kosong") : Text("Penuh"),
             ],
           ),

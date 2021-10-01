@@ -1,14 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/helper/databaseHelper.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/models/node.dart';
-import 'package:provider/provider.dart';
 
 class PagePembenihan extends StatefulWidget {
   const PagePembenihan({Key? key}) : super(key: key);
@@ -23,29 +19,25 @@ class _PagePembenihanState extends State<PagePembenihan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: SpeedDial(
-          children: [
-            SpeedDialChild(
-              child: Icon(FontAwesomeIcons.fileExport),
-              label: "Ekspor data",
-              onTap: () => setState(() {
-                // TODO: Export data
-              }),
-            ),
-            SpeedDialChild(
-              child: Icon(FontAwesomeIcons.fileExport),
-              label: "Matikan otomasi",
-              onTap: () => setState(() {
-                // TODO: Publish matikan otomasi pembenih
-                // _state.getNodeTempModel.removeAll();
-              }),
-            )
-          ],
-          child: Icon(FontAwesomeIcons.list),
-        ),
-        // body: ListView(
-        //   padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
-        //   children: _buildNodeList(_state.getNodeTempModel),
+        // floatingActionButton: SpeedDial(
+        //   children: [
+        //     SpeedDialChild(
+        //       child: Icon(FontAwesomeIcons.fileExport),
+        //       label: "Ekspor data",
+        //       onTap: () => setState(() {
+        //         // TODO: Export data
+        //       }),
+        //     ),
+        //     SpeedDialChild(
+        //       child: Icon(FontAwesomeIcons.fileExport),
+        //       label: "Matikan otomasi",
+        //       onTap: () => setState(() {
+        //         // TODO: Publish matikan otomasi pembenih
+        //         // _state.getNodeTempModel.removeAll();
+        //       }),
+        //     )
+        //   ],
+        //   child: Icon(FontAwesomeIcons.list),
         // ),
         body: FirebaseAnimatedList(
             query: dbRef.child('suhu'),
@@ -153,7 +145,7 @@ class _PagePembenihanState extends State<PagePembenihan> {
           .update({'lampu': switchLampu, 'timestamp': timestamp});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Sukses. Lampu = ${switchLampu}'),
+          content: Text('Sukses. Lampu = $switchLampu'),
           duration: Duration(milliseconds: 500),
         ),
       );
