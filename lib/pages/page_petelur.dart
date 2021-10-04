@@ -1,13 +1,6 @@
-import 'dart:math';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:imdp_xl/appState.dart';
-import 'package:imdp_xl/helper/databaseHelper.dart';
-import 'package:imdp_xl/models/node.dart';
 import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
 
@@ -20,13 +13,6 @@ class PagePetelur extends StatefulWidget {
 
 class _PagePetelurState extends State<PagePetelur> {
   final dbRef = FirebaseDatabase.instance.reference();
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: _mainView(),
-    );
-  }
 
   Widget _mainView() {
     return Scaffold(
@@ -59,16 +45,18 @@ class _PagePetelurState extends State<PagePetelur> {
     );
   }
 
-  Column loading() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircularProgressIndicator(),
-        SizedBox(
-          height: 18,
-        ),
-        Text("Loading data / sedang offline"),
-      ],
+  Widget loading() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(
+            height: 18,
+          ),
+          Text("Loading data / sedang offline"),
+        ],
+      ),
     );
   }
 
@@ -155,5 +143,12 @@ class _PagePetelurState extends State<PagePetelur> {
             ],
           ),
         ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: _mainView(),
+    );
   }
 }

@@ -16,53 +16,18 @@ class PagePembenihan extends StatefulWidget {
 class _PagePembenihanState extends State<PagePembenihan> {
   final dbRef = FirebaseDatabase.instance.reference();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        // floatingActionButton: SpeedDial(
-        //   children: [
-        //     SpeedDialChild(
-        //       child: Icon(FontAwesomeIcons.fileExport),
-        //       label: "Ekspor data",
-        //       onTap: () => setState(() {
-        //         // TODO: Export data
-        //       }),
-        //     ),
-        //     SpeedDialChild(
-        //       child: Icon(FontAwesomeIcons.fileExport),
-        //       label: "Matikan otomasi",
-        //       onTap: () => setState(() {
-        //         // TODO: Publish matikan otomasi pembenih
-        //         // _state.getNodeTempModel.removeAll();
-        //       }),
-        //     )
-        //   ],
-        //   child: Icon(FontAwesomeIcons.list),
-        // ),
-        body: FirebaseAnimatedList(
-            query: dbRef.child('suhu'),
-            defaultChild: Center(
-              child: loading(),
-            ),
-            itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                Animation<double> animation, int index) {
-              return SizeTransition(
-                sizeFactor: animation,
-                child: _buildCard(snapshot),
-              );
-            }));
-  }
-
-  Column loading() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircularProgressIndicator(),
-        SizedBox(
-          height: 18,
-        ),
-        Text("Loading data / sedang offline"),
-      ],
+  Widget loading() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(
+            height: 18,
+          ),
+          Text("Loading data / sedang offline"),
+        ],
+      ),
     );
   }
 
@@ -150,5 +115,40 @@ class _PagePembenihanState extends State<PagePembenihan> {
         ),
       );
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        // floatingActionButton: SpeedDial(
+        //   children: [
+        //     SpeedDialChild(
+        //       child: Icon(FontAwesomeIcons.fileExport),
+        //       label: "Ekspor data",
+        //       onTap: () => setState(() {
+        //         // TODO: Export data
+        //       }),
+        //     ),
+        //     SpeedDialChild(
+        //       child: Icon(FontAwesomeIcons.fileExport),
+        //       label: "Matikan otomasi",
+        //       onTap: () => setState(() {
+        //         // TODO: Publish matikan otomasi pembenih
+        //         // _state.getNodeTempModel.removeAll();
+        //       }),
+        //     )
+        //   ],
+        //   child: Icon(FontAwesomeIcons.list),
+        // ),
+        body: FirebaseAnimatedList(
+            query: dbRef.child('suhu'),
+            defaultChild: loading(),
+            itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                Animation<double> animation, int index) {
+              return SizeTransition(
+                sizeFactor: animation,
+                child: _buildCard(snapshot),
+              );
+            }));
   }
 }
