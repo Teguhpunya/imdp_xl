@@ -30,17 +30,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   font_awesome_flutter: ^9.1.0
-  draw_graph: ^1.0.0
-  mqtt_client: ^9.4.2
   intl: ^0.17.0
   flutter_speed_dial: ^4.2.0
   sqflite: ^2.0.0+4
-  bloc_flutter: ^0.1.0
-  bloc: ^7.1.0
   firebase_core: ^1.7.0
   firebase_storage: ^10.0.4
   firebase_database: ^8.0.0
   motion_tab_bar_v2: ^0.2.4
+  expansion_tile_card: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +59,8 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - assets/images/splash.jpg
+    - assets/images/
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

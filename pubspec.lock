@@ -8,27 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
-  bloc:
-    dependency: "direct main"
-    description:
-      name: bloc
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.1.0"
-  bloc_base:
-    dependency: transitive
-    description:
-      name: bloc_base
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
-  bloc_flutter:
-    dependency: "direct main"
-    description:
-      name: bloc_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -64,13 +43,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  crypto:
-    dependency: transitive
-    description:
-      name: crypto
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -78,17 +50,10 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  draw_graph:
+  expansion_tile_card:
     dependency: "direct main"
     description:
-      name: draw_graph
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
-  event_bus:
-    dependency: transitive
-    description:
-      name: event_bus
+      name: expansion_tile_card
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
@@ -240,13 +205,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.4"
-  mqtt_client:
-    dependency: "direct main"
-    description:
-      name: mqtt_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "9.4.2"
   nested:
     dependency: transitive
     description:
@@ -282,13 +240,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.21.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -373,4 +324,4 @@ packages:
     version: "2.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.20.0"
+  flutter: ">=1.26.0-0"

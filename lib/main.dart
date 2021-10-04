@@ -60,11 +60,12 @@ class Splash extends StatelessWidget {
       body: Center(
           child: lightMode
               ? Image.asset(
-                  'assets/images/splash.jpg',
-                  colorBlendMode: BlendMode.screen,
+                  'assets/images/splash-light.png',
                 )
               // ? Icon(Icons.ac_unit)
-              : Image.asset('assets/splash_dark.png')),
+              : Image.asset(
+                  'assets/images/splash-dark.png',
+                )),
     );
   }
 }

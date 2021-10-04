@@ -1,10 +1,11 @@
+import 'dart:ui';
+
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class PagePembenihan extends StatefulWidget {
   const PagePembenihan({Key? key}) : super(key: key);
@@ -31,49 +32,93 @@ class _PagePembenihanState extends State<PagePembenihan> {
     );
   }
 
-  // Generate cards
-  Widget _buildCard(DataSnapshot item) {
+  Widget _tileCard(DataSnapshot item) {
+    String? kandang = item.key;
+    double suhu = (item.value['suhu1'] + item.value['suhu2']) / 2;
     DateTime _dateTime =
         DateTime.fromMillisecondsSinceEpoch(item.value['timestamp']);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
-    return Card(
-      elevation: 4,
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
+
+    return Column(
+      children: [
+        ExpansionTileCard(
+          animateTrailing: true,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Kandang ${item.key}"),
-              Text(
-                "${item.value['suhu1']}° C",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "${item.value['suhu2']}° C",
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text("Kandang $kandang"),
+              Icon(
+                FontAwesomeIcons.clock,
+                size: 18,
               ),
             ],
           ),
-        ),
-        Container(
-          constraints: BoxConstraints(maxWidth: 128),
-          child: Text(
-            "Terakhir update: \n$_timestamp",
-            softWrap: true,
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Suhu: $suhu° C",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "$_timestamp",
+                softWrap: true,
+              ),
+            ],
           ),
+          expandedColor: Colors.lightBlue[50],
+          children: [
+            Divider(
+              thickness: 1.0,
+              height: 1.0,
+            ),
+            _tileCardEx(item)
+          ],
         ),
-        _lampuButton(item),
-      ]),
+      ],
     );
+  }
+
+  Widget _tileCardEx(DataSnapshot item) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Container(
+          // color: Colors.green,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Column(
+              children: [
+                Text('Suhu 1'),
+                Text(
+                  "${item.value['suhu1']}° C",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                Text('Suhu 2'),
+                Text(
+                  "${item.value['suhu2']}° C",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Container(
+                constraints: BoxConstraints(minWidth: 128),
+                child: _lampuButton(item))
+          ]),
+        ));
   }
 
   // Lampu button
   Widget _lampuButton(DataSnapshot item) {
     int stateLampu = item.value['lampu'];
+
     return ElevatedButton(
         style: ButtonStyle(
-            fixedSize: MaterialStateProperty.resolveWith(
-                (states) => Size.fromWidth(128)),
+            // fixedSize: MaterialStateProperty.resolveWith(
+            //     (states) => Size.fromWidth(64)),
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
                 (stateLampu == 1) ? Colors.yellow.shade800 : Colors.indigo)),
         onPressed: () {
@@ -141,13 +186,14 @@ class _PagePembenihanState extends State<PagePembenihan> {
         //   child: Icon(FontAwesomeIcons.list),
         // ),
         body: FirebaseAnimatedList(
+            padding: EdgeInsets.only(bottom: 32),
             query: dbRef.child('suhu'),
             defaultChild: loading(),
             itemBuilder: (BuildContext context, DataSnapshot snapshot,
                 Animation<double> animation, int index) {
               return SizeTransition(
                 sizeFactor: animation,
-                child: _buildCard(snapshot),
+                child: _tileCard(snapshot),
               );
             }));
   }

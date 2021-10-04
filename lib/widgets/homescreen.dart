@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/pages/page_dev.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
 import 'package:imdp_xl/pages/page_pembenihan.dart';
 import 'package:imdp_xl/pages/page_petelur.dart';
@@ -18,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     OverviewPage(),
     PagePembenihan(),
     PagePetelur(),
-    // SettingsPage(),
+    PageDev(),
   ];
 
   TabController? _tabController;
@@ -48,12 +49,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           centerTitle: true,
         ),
         bottomNavigationBar: MotionTabBar(
-          initialSelectedTab: "Overview",
-          labels: ['Overview', 'Pembenihan', 'Petelur'],
+          initialSelectedTab: 'Overview',
+          labels: ['Overview', 'Pembenihan', 'Petelur', 'Dev'],
           icons: [
             FontAwesomeIcons.bookReader,
             FontAwesomeIcons.earlybirds,
-            FontAwesomeIcons.egg
+            FontAwesomeIcons.egg,
+            FontAwesomeIcons.wrench,
           ],
           textStyle: TextStyle(fontWeight: FontWeight.bold),
           tabIconColor: Colors.blue[600],
