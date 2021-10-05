@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/pages/page_dev.dart';
 import 'package:imdp_xl/pages/page_overview.dart';
 import 'package:imdp_xl/pages/page_pembenihan.dart';
 import 'package:imdp_xl/pages/page_petelur.dart';
-
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,10 +14,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   static List<Widget> pages = [
-    OverviewPage(),
     PagePembenihan(),
+    OverviewPage(),
     PagePetelur(),
-    PageDev(),
+    // PageDev(),
   ];
 
   TabController? _tabController;
@@ -34,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(
-      initialIndex: 0,
+      initialIndex: 1,
       length: pages.length,
       vsync: this,
     );
@@ -50,12 +48,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         bottomNavigationBar: MotionTabBar(
           initialSelectedTab: 'Overview',
-          labels: ['Overview', 'Pembenihan', 'Petelur', 'Dev'],
+          labels: [
+            'Pembenihan',
+            'Overview',
+            'Petelur',
+            // 'Dev'
+          ],
           icons: [
-            FontAwesomeIcons.bookReader,
             FontAwesomeIcons.earlybirds,
+            FontAwesomeIcons.bookReader,
             FontAwesomeIcons.egg,
-            FontAwesomeIcons.wrench,
+            // FontAwesomeIcons.wrench,
           ],
           textStyle: TextStyle(fontWeight: FontWeight.bold),
           tabIconColor: Colors.blue[600],
