@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -137,13 +139,17 @@ class _OverviewPageState extends State<OverviewPage> {
           children: [
             Text("Kandang ${snapshot.key}"),
             Text(
-              statusPakan(snapshot.value['pakan']),
+              "Pakan ${statusPakan(min(snapshot.value['pakan1'], snapshot.value['pakan2']))}",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
-              statusPakanCadang(snapshot.value['pakanCadang']),
+              "Cadangan 1 ${statusPakanCadang(snapshot.value['cpakan1'])}",
               style: TextStyle(fontWeight: FontWeight.bold),
-            )
+            ),
+            Text(
+              "Cadangan 2 ${statusPakanCadang(snapshot.value['cpakan2'])}",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
@@ -170,16 +176,16 @@ class _OverviewPageState extends State<OverviewPage> {
         });
   }
 
-  String statusPakan(pakan) {
+  String statusPakan(int pakan) {
     switch (pakan) {
       case 1:
-        return 'Penuh';
+        return 'Terisi';
       default:
         return 'Kosong';
     }
   }
 
-  String statusPakanCadang(pakan) {
+  String statusPakanCadang(int pakan) {
     switch (pakan) {
       case 1:
         return 'Sedang';

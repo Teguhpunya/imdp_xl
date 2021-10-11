@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -66,8 +68,6 @@ class _PagePetelurState extends State<PagePetelur> {
         DateTime.fromMillisecondsSinceEpoch(item.value['timestamp']);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
 
-    int pakanCadang = item.value['pakanCadang'];
-
     return Card(
       elevation: 4,
       child: Column(
@@ -82,36 +82,47 @@ class _PagePetelurState extends State<PagePetelur> {
               Container(
                 child: Text("Terakhir update: \n$_timestamp"),
               ),
-              _pakanButton(item)
+              Column(
+                children: [
+                  _pakanButton(item),
+                ],
+              )
             ],
           ),
-          cekPakanCadang(pakanCadang)
+          Row(
+            children: [
+              cekCPakan(item, "cpakan1"),
+              cekCPakan(item, "cpakan2"),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget cekPakanCadang(int pakanCadang) {
-    switch (pakanCadang) {
+  Widget cekCPakan(DataSnapshot item, String jenisCPakan) {
+    switch (item.value[jenisCPakan]) {
       case 1:
-        return Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.yellow,
-            child: Center(child: Text('Cadangan pakan: Sedang')));
+        return Expanded(
+          child: Container(
+              color: Colors.yellow,
+              child: Center(child: Text('$jenisCPakan: Sedang'))),
+        );
       case 2:
-        return Text('Cadangan pakan: Penuh');
+        return Expanded(child: Center(child: Text('$jenisCPakan: Penuh')));
       default:
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          color: Colors.red[200],
-          child: Center(child: Text('Cadangan pakan: Kosong')),
+        return Expanded(
+          child: Container(
+            color: Colors.red[200],
+            child: Center(child: Text('$jenisCPakan: Kosong')),
+          ),
         );
     }
   }
 
   // Pakan button
-  Widget _pakanButton(item) {
-    int statePakan = item.value['pakan'];
+  Widget _pakanButton(DataSnapshot item) {
+    int statePakan = min(item.value['pakan1'], item.value['pakan2']);
     return ElevatedButton(
         style: ButtonStyle(
             fixedSize: MaterialStateProperty.resolveWith(
@@ -139,7 +150,7 @@ class _PagePetelurState extends State<PagePetelur> {
               SizedBox(
                 height: 16,
               ),
-              (statePakan == 0) ? Text("Kosong") : Text("Penuh"),
+              (statePakan == 0) ? Text("Kosong") : Text("Tersedia"),
             ],
           ),
         ));
