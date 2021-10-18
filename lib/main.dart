@@ -54,18 +54,12 @@ class Splash extends StatelessWidget {
     bool lightMode =
         MediaQuery.of(context).platformBrightness == Brightness.light;
     return Scaffold(
-      backgroundColor: lightMode
-          ? Color(0xffffff).withOpacity(1.0)
-          : Color(0x042a49).withOpacity(1.0),
-      body: Center(
-          child: lightMode
-              ? Image.asset(
-                  'assets/images/splash-light.png',
-                )
-              // ? Icon(Icons.ac_unit)
-              : Image.asset(
-                  'assets/images/splash-dark.png',
-                )),
-    );
+        backgroundColor: lightMode
+            ? Color(0xffffff).withOpacity(1.0)
+            : Color(0x042a49).withOpacity(1.0),
+        body: Center(
+            child: Image.asset(
+          'assets/images/splash-logo.png',
+        )));
   }
 }

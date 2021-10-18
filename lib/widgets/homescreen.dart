@@ -43,8 +43,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       length: pages.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Quailabs'),
-          centerTitle: true,
+          backgroundColor: Color.fromRGBO(107, 107, 107, 1),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/logo.png',
+                height: 30,
+              ),
+              Text('uailabs'),
+            ],
+          ),
+          // centerTitle: true,
         ),
         bottomNavigationBar: MotionTabBar(
           initialSelectedTab: 'Overview',
@@ -60,11 +70,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             FontAwesomeIcons.egg,
             // FontAwesomeIcons.wrench,
           ],
-          textStyle: TextStyle(fontWeight: FontWeight.bold),
-          tabIconColor: Colors.blue[600],
-          tabSelectedColor: Colors.blue[900],
-          tabIconSelectedColor: Colors.white,
-          tabBarColor: Colors.white,
+          textStyle:
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          tabIconColor: Colors.white,
+          tabSelectedColor: Color.fromRGBO(215, 189, 148, 1),
+          tabIconSelectedColor: Color.fromRGBO(25, 25, 25, 1),
+          tabBarColor: Color.fromRGBO(107, 107, 107, 1),
           onTabItemSelected: (int value) {
             setState(() {
               _tabController!.index = value;

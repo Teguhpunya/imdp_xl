@@ -1,8 +1,11 @@
 import 'dart:math';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
 
@@ -17,34 +20,16 @@ class _PagePetelurState extends State<PagePetelur> {
   final dbRef = FirebaseDatabase.instance.reference();
 
   Widget _mainView() {
-    return Scaffold(
-      // floatingActionButton: SpeedDial(
-      //   children: [
-      //     SpeedDialChild(
-      //       child: Icon(FontAwesomeIcons.fileExport),
-      //       label: "Ekspor data",
-      //       onTap: () => setState(() {
-      //         // TODO: Export data
-      //       }),
-      //     ),
-      //     SpeedDialChild(
-      //       child: Icon(FontAwesomeIcons.fileExport),
-      //       label: "Matikan otomasi",
-      //       onTap: () => setState(() {
-      //         // TODO: Publish matikan otomasi pembenih
-      //       }),
-      //     )
-      //   ],
-      //   child: Icon(FontAwesomeIcons.list),
-      // ),
-      body: FirebaseAnimatedList(
-          query: dbRef.child('pakan'),
-          defaultChild: loading(),
-          itemBuilder: (context, snapshot, animation, index) {
-            return SizeTransition(
-                sizeFactor: animation, child: _buildCard(snapshot));
-          }),
-    );
+    return FirebaseAnimatedList(
+        padding: EdgeInsets.only(bottom: 32, top: 4),
+        query: dbRef.child('pakan'),
+        defaultChild: loading(),
+        itemBuilder: (context, snapshot, animation, index) {
+          return Card(
+            child: SizeTransition(
+                sizeFactor: animation, child: _tileCard(snapshot)),
+          );
+        });
   }
 
   Widget loading() {
@@ -62,83 +47,141 @@ class _PagePetelurState extends State<PagePetelur> {
     );
   }
 
-  // Generate Card
-  Widget _buildCard(DataSnapshot item) {
+  Widget _tileCard(DataSnapshot item) {
+    String? kandang = item.key;
+    int pakan = min(item.value['pakan1'], item.value['pakan2']);
     DateTime _dateTime =
         DateTime.fromMillisecondsSinceEpoch(item.value['timestamp']);
     String _timestamp = DateFormat('dd-MMM-yyyy H:mm').format(_dateTime);
 
-    return Card(
-      elevation: 4,
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      children: [
+        ExpansionTileCard(
+          animateTrailing: true,
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text("Kandang ${item.key}"),
+              Text("Kandang $kandang"),
+              Icon(
+                FontAwesomeIcons.clock,
+                size: 18,
               ),
-              Container(
-                child: Text("Terakhir update: \n$_timestamp"),
-              ),
-              Column(
-                children: [
-                  _pakanButton(item),
-                ],
-              )
             ],
           ),
-          Row(
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              cekCPakan(item, "cpakan1"),
-              cekCPakan(item, "cpakan2"),
+              Text(
+                "Pakan: ${_cekPakan(pakan)}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "$_timestamp",
+                softWrap: true,
+              ),
             ],
           ),
-        ],
-      ),
+          expandedColor: Colors.lightBlue[50],
+          children: [
+            Divider(
+              thickness: 1.0,
+              height: 1.0,
+            ),
+            _tileCardEx(item)
+          ],
+        ),
+      ],
     );
   }
 
-  Widget cekCPakan(DataSnapshot item, String jenisCPakan) {
+  Widget _tileCardEx(DataSnapshot item) {
+    int pakan = min(item.value['pakan1'], item.value['pakan2']);
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Column(
+            // color: Colors.green,
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                Column(
+                  children: [
+                    Column(
+                      children: [
+                        Text('Pakan utama'),
+                        Text(
+                          _cekPakan(pakan),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Column(
+                      children: [
+                        Text('Pakan cadangan'),
+                        Row(
+                          children: [
+                            Text(
+                              "${_cekCPakan(item, 'cpakan1')}",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              "${_cekCPakan(item, 'cpakan2')}",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                    constraints: BoxConstraints(minWidth: 128),
+                    child: _pakanButton(item))
+              ]),
+            ]));
+  }
+
+  String _cekPakan(pakan) {
+    return (pakan == 1) ? "Penuh" : "Kosong";
+  }
+
+  String _cekCPakan(DataSnapshot item, String jenisCPakan) {
     switch (item.value[jenisCPakan]) {
       case 1:
-        return Expanded(
-          child: Container(
-              color: Colors.yellow,
-              child: Center(child: Text('$jenisCPakan: Sedang'))),
-        );
+        return 'Sedang';
       case 2:
-        return Expanded(child: Center(child: Text('$jenisCPakan: Penuh')));
+        return 'Penuh';
       default:
-        return Expanded(
-          child: Container(
-            color: Colors.red[200],
-            child: Center(child: Text('$jenisCPakan: Kosong')),
-          ),
-        );
+        return 'Kosong';
     }
   }
 
   // Pakan button
   Widget _pakanButton(DataSnapshot item) {
     int statePakan = min(item.value['pakan1'], item.value['pakan2']);
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
     return ElevatedButton(
-        style: ButtonStyle(
-            fixedSize: MaterialStateProperty.resolveWith(
-                (states) => Size.fromWidth(128))),
         onPressed: (statePakan == 0)
             ? () {
                 setState(() {
                   statePakan = 1;
                   dbRef
                       .child('/pakan/${item.key}')
-                      .update({'pakan': statePakan});
+                      .update({'pakan1': statePakan});
+                  dbRef
+                      .child('/pakan/${item.key}')
+                      .update({'pakan2': statePakan});
+                  dbRef
+                      .child('/pakan/${item.key}')
+                      .update({'timestamp': timestamp});
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text('Sukses. Pakan: $statePakan'),
-                      duration: Duration(milliseconds: 500)),
+                showOkAlertDialog(
+                  context: context,
+                  title: 'Sukses!',
+                  // message: '\"clampu\": $switchLampu'
                 );
               }
             : null,
@@ -150,7 +193,10 @@ class _PagePetelurState extends State<PagePetelur> {
               SizedBox(
                 height: 16,
               ),
-              (statePakan == 0) ? Text("Kosong") : Text("Tersedia"),
+              Center(
+                  child: (statePakan == 0)
+                      ? Text("Beri pakan!")
+                      : Text("Masih ada")),
             ],
           ),
         ));
@@ -158,8 +204,9 @@ class _PagePetelurState extends State<PagePetelur> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: _mainView(),
+    return Scaffold(
+      backgroundColor: Color.fromRGBO(2, 122, 147, 1),
+      body: _mainView(),
     );
   }
 }

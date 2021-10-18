@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -82,33 +83,38 @@ class _PagePembenihanState extends State<PagePembenihan> {
   Widget _tileCardEx(DataSnapshot item) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: Container(
-          // color: Colors.green,
-          child:
+        child: Column(
+            // color: Colors.green,
+            children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            Column(
-              children: [
-                Text('Suhu 1'),
-                Text(
-                  "${item.value['suhu1']}° C",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Column(
+                  children: [
+                    Text('Suhu 1'),
+                    Text(
+                      "${item.value['suhu1']}° C",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Column(
-              children: [
-                Text('Suhu 2'),
-                Text(
-                  "${item.value['suhu2']}° C",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Column(
+                  children: [
+                    Text('Suhu 2'),
+                    Text(
+                      "${item.value['suhu2']}° C",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Container(
-                constraints: BoxConstraints(minWidth: 128),
-                child: _lampuButton(item))
-          ]),
-        ));
+                Container(
+                    constraints: BoxConstraints(minWidth: 128),
+                    child: _lampuButton(item))
+              ]),
+              // Container(
+              //   child: Center(
+              //     child: Text('clampu: ${item.value['clampu']}'),
+              //   ),
+              // )
+            ]));
   }
 
   // Lampu button
@@ -117,12 +123,9 @@ class _PagePembenihanState extends State<PagePembenihan> {
 
     return ElevatedButton(
         style: ButtonStyle(
-            // fixedSize: MaterialStateProperty.resolveWith(
-            //     (states) => Size.fromWidth(64)),
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
                 (stateLampu == 1) ? Colors.yellow.shade800 : Colors.indigo)),
         onPressed: () {
-          // TODO: Publish control message lampu
           Future.delayed(Duration(seconds: 4));
           switchLampu(item, stateLampu);
         },
@@ -147,53 +150,33 @@ class _PagePembenihanState extends State<PagePembenihan> {
   }
 
   void switchLampu(DataSnapshot item, int stateLampu) {
+    int switchLampu = 1 - stateLampu;
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
     setState(() {
-      int switchLampu = 1 - stateLampu;
-      int timestamp = DateTime.now().millisecondsSinceEpoch;
       dbRef
           .child('/suhu/${item.key}')
           .update({'lampu': switchLampu, 'timestamp': timestamp});
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Sukses. Lampu = $switchLampu'),
-          duration: Duration(milliseconds: 500),
-        ),
-      );
     });
+    showOkAlertDialog(
+        context: context, title: 'Sukses!', message: '\"lampu\": $switchLampu');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // floatingActionButton: SpeedDial(
-        //   children: [
-        //     SpeedDialChild(
-        //       child: Icon(FontAwesomeIcons.fileExport),
-        //       label: "Ekspor data",
-        //       onTap: () => setState(() {
-        //         // TODO: Export data
-        //       }),
-        //     ),
-        //     SpeedDialChild(
-        //       child: Icon(FontAwesomeIcons.fileExport),
-        //       label: "Matikan otomasi",
-        //       onTap: () => setState(() {
-        //         // TODO: Publish matikan otomasi pembenih
-        //         // _state.getNodeTempModel.removeAll();
-        //       }),
-        //     )
-        //   ],
-        //   child: Icon(FontAwesomeIcons.list),
-        // ),
+        backgroundColor: Color.fromRGBO(2, 122, 147, 1),
         body: FirebaseAnimatedList(
-            padding: EdgeInsets.only(bottom: 32),
+            padding: EdgeInsets.only(bottom: 32, top: 4),
             query: dbRef.child('suhu'),
             defaultChild: loading(),
             itemBuilder: (BuildContext context, DataSnapshot snapshot,
                 Animation<double> animation, int index) {
-              return SizeTransition(
-                sizeFactor: animation,
-                child: _tileCard(snapshot),
+              return Card(
+                child: SizeTransition(
+                  sizeFactor: animation,
+                  axisAlignment: 1,
+                  child: _tileCard(snapshot),
+                ),
               );
             }));
   }

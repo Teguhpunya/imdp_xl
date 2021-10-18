@@ -16,12 +16,11 @@ class OverviewPage extends StatefulWidget {
 class _OverviewPageState extends State<OverviewPage> {
   final dbRef = FirebaseDatabase.instance.reference();
 
-  ListView _mainView() {
+  _mainView() {
     return ListView(
       padding: const EdgeInsets.only(bottom: 64),
       children: <Widget>[
         mainContainer(
-          Colors.amberAccent,
           Column(
             children: [
               Icon(FontAwesomeIcons.earlybirds),
@@ -44,7 +43,6 @@ class _OverviewPageState extends State<OverviewPage> {
           ),
         ),
         mainContainer(
-          Colors.greenAccent,
           Column(
             children: [
               Icon(FontAwesomeIcons.egg),
@@ -64,26 +62,24 @@ class _OverviewPageState extends State<OverviewPage> {
             ],
           ),
         ),
-        mainContainer(
-            Colors.blue,
-            Container(
-              height: 128,
-              child: Center(
-                child: Text(
-                  'Coming Soon',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-              ),
-            )),
+        mainContainer(Container(
+          height: 128,
+          child: Center(
+            child: Text(
+              'Coming Soon',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+          ),
+        )),
       ],
     );
   }
 
-  Widget mainContainer(Color? color, Widget? child) {
+  Widget mainContainer(Widget? child) {
     return Card(
       margin: EdgeInsets.all(8),
       elevation: 4,
-      color: color,
+      color: Color.fromRGBO(133, 219, 242, 1),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 16),
         child: child,
@@ -198,6 +194,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: _mainView());
+    return Scaffold(
+        backgroundColor: Color.fromRGBO(2, 122, 147, 1), body: _mainView());
   }
 }
