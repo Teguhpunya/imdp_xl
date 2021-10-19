@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class OverviewPage extends StatefulWidget {
-  const OverviewPage({Key? key}) : super(key: key);
+class OverviewTab extends StatefulWidget {
+  const OverviewTab({Key? key}) : super(key: key);
 
   @override
-  _OverviewPageState createState() => _OverviewPageState();
+  _OverviewTabState createState() => _OverviewTabState();
 }
 
-class _OverviewPageState extends State<OverviewPage> {
+class _OverviewTabState extends State<OverviewTab> {
   final dbRef = FirebaseDatabase.instance.reference();
 
   _mainView() {

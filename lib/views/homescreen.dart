@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/pages/page_overview.dart';
-import 'package:imdp_xl/pages/page_pembenihan.dart';
-import 'package:imdp_xl/pages/page_petelur.dart';
+import 'package:imdp_xl/views/overview/overview_tab.dart';
+import 'package:imdp_xl/views/pembenihan/pembenihan_tab.dart';
+import 'package:imdp_xl/views/petelur/petelur_tab.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,9 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  static List<Widget> pages = [
+  static List<Widget> tabViews = [
     PagePembenihan(),
-    OverviewPage(),
+    OverviewTab(),
     PagePetelur(),
     // PageDev(),
   ];
@@ -33,14 +33,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
     _tabController = TabController(
       initialIndex: 1,
-      length: pages.length,
+      length: tabViews.length,
       vsync: this,
     );
   }
 
   Widget quaildeaApp(BuildContext context) {
     return DefaultTabController(
-      length: pages.length,
+      length: tabViews.length,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(107, 107, 107, 1),
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           physics:
               NeverScrollableScrollPhysics(), // swipe navigation handling is not supported
           controller: _tabController,
-          children: pages,
+          children: tabViews,
         ),
       ),
     );
