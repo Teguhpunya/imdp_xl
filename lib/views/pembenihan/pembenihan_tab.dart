@@ -82,11 +82,16 @@ class _PagePembenihanState extends State<PagePembenihan> {
 
   Widget _tileCardEx(DataSnapshot item) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 8.0,
+        ),
         child: Column(
-            // color: Colors.green,
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          // color: Colors.green,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
                 Column(
                   children: [
                     Text('Suhu 1'),
@@ -108,13 +113,10 @@ class _PagePembenihanState extends State<PagePembenihan> {
                 Container(
                     constraints: BoxConstraints(minWidth: 128),
                     child: _lampuButton(item))
-              ]),
-              // Container(
-              //   child: Center(
-              //     child: Text('clampu: ${item.value['clampu']}'),
-              //   ),
-              // )
-            ]));
+              ],
+            ),
+          ],
+        ));
   }
 
   // Lampu button
@@ -122,31 +124,33 @@ class _PagePembenihanState extends State<PagePembenihan> {
     int stateLampu = item.value['lampu'];
 
     return ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                (stateLampu == 1) ? Colors.yellow.shade800 : Colors.indigo)),
-        onPressed: () {
-          Future.delayed(Duration(seconds: 4));
-          switchLampu(item, stateLampu);
-        },
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Icon((stateLampu == 1)
-                  ? FontAwesomeIcons.solidLightbulb
-                  : FontAwesomeIcons.lightbulb),
-              SizedBox(
-                height: 16,
-              ),
-              Text("Lampu"),
-              Text(
-                (stateLampu == 1) ? "Menyala" : "Mati",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ));
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith((states) =>
+            (stateLampu == 1) ? Colors.yellow.shade800 : Colors.indigo),
+      ),
+      onPressed: () {
+        Future.delayed(Duration(seconds: 4));
+        switchLampu(item, stateLampu);
+      },
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Icon((stateLampu == 1)
+                ? FontAwesomeIcons.solidLightbulb
+                : FontAwesomeIcons.lightbulb),
+            SizedBox(
+              height: 16,
+            ),
+            Text("Lampu"),
+            Text(
+              (stateLampu == 1) ? "Menyala" : "Mati",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   void switchLampu(DataSnapshot item, int stateLampu) {
@@ -164,20 +168,26 @@ class _PagePembenihanState extends State<PagePembenihan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromRGBO(2, 122, 147, 1),
-        body: FirebaseAnimatedList(
-            padding: EdgeInsets.only(bottom: 32, top: 4),
-            query: dbRef.child('suhu'),
-            defaultChild: loading(),
-            itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                Animation<double> animation, int index) {
-              return Card(
-                child: SizeTransition(
-                  sizeFactor: animation,
-                  axisAlignment: 1,
-                  child: _tileCard(snapshot),
-                ),
-              );
-            }));
+      backgroundColor: Color.fromRGBO(2, 122, 147, 1),
+      body: FirebaseAnimatedList(
+        padding: EdgeInsets.only(bottom: 32, top: 4),
+        query: dbRef.child('suhu'),
+        defaultChild: loading(),
+        itemBuilder: (
+          BuildContext context,
+          DataSnapshot snapshot,
+          Animation<double> animation,
+          int index,
+        ) {
+          return Card(
+            child: SizeTransition(
+              sizeFactor: animation,
+              axisAlignment: 1,
+              child: _tileCard(snapshot),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -67,7 +67,10 @@ class _OverviewTabState extends State<OverviewTab> {
           child: Center(
             child: Text(
               'Coming Soon',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         )),
@@ -92,8 +95,12 @@ class _OverviewTabState extends State<OverviewTab> {
         scrollDirection: Axis.horizontal,
         defaultChild: loading(),
         query: dbRef.child('suhu'),
-        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-            Animation<double> animation, int index) {
+        itemBuilder: (
+          BuildContext context,
+          DataSnapshot snapshot,
+          Animation<double> animation,
+          int index,
+        ) {
           return SizeTransition(
             sizeFactor: animation,
             child: _cardItemPembenihan(snapshot),
@@ -166,8 +173,12 @@ class _OverviewTabState extends State<OverviewTab> {
         query: dbRef.child('pakan'),
         scrollDirection: Axis.horizontal,
         defaultChild: loading(),
-        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-            Animation<double> animation, int index) {
+        itemBuilder: (
+          BuildContext context,
+          DataSnapshot snapshot,
+          Animation<double> animation,
+          int index,
+        ) {
           return _cardItemPetelur(snapshot);
         });
   }
@@ -195,6 +206,8 @@ class _OverviewTabState extends State<OverviewTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromRGBO(2, 122, 147, 1), body: _mainView());
+      backgroundColor: Color.fromRGBO(2, 122, 147, 1),
+      body: _mainView(),
+    );
   }
 }

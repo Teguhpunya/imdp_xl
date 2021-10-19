@@ -20,7 +20,9 @@ class MyApp extends StatelessWidget {
         builder: (context, AsyncSnapshot snapshot) {
           // Show splash screen while waiting for app resources to load:
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return MaterialApp(home: Splash());
+            return MaterialApp(
+              home: Splash(),
+            );
           } else {
             // Loading is done, return the app:,
             return MaterialApp(
@@ -41,7 +43,9 @@ class Init {
   static final instance = Init._();
 
   Future initialize() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(
+      const Duration(seconds: 3),
+    );
   }
 }
 
