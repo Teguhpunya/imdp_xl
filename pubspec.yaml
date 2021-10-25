@@ -38,11 +38,16 @@ dependencies:
   motion_tab_bar_v2: ^0.2.4
   expansion_tile_card: ^2.0.0
   adaptive_dialog: ^1.1.0
+  flutter_launcher_icons: ^0.9.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  image_path: "assets/images/logo.png"
+  android: true
+  
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

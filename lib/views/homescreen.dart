@@ -51,7 +51,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 'assets/images/logo.png',
                 height: 30,
               ),
-              Text('uailabs'),
+              Text(
+                'uailabs',
+                style: TextStyle(
+                  letterSpacing: 2.0,
+                ),
+              ),
             ],
           ),
           // centerTitle: true,
@@ -76,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           tabSelectedColor: Color.fromRGBO(215, 189, 148, 1),
           tabIconSelectedColor: Color.fromRGBO(25, 25, 25, 1),
           tabBarColor: Color.fromRGBO(107, 107, 107, 1),
-          onTabItemSelected: (int value) {
+          onTabItemSelected: (int value) async {
             setState(() {
               _tabController!.index = value;
             });
