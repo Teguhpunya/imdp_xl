@@ -13,7 +13,7 @@ class Quaildea extends StatefulWidget {
 class _QuaildeaState extends State<Quaildea> {
   final dbRef = FirebaseDatabase.instance.reference();
 
-  Widget appList() {
+  Widget myAppList() {
     return StreamBuilder(
       stream: dbRef.child("suhu").onValue,
       builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
@@ -46,7 +46,7 @@ class _QuaildeaState extends State<Quaildea> {
                             child: myCard(
                               Colors.white,
                               [
-                                textHeader("Suhu 1"),
+                                myTextHeader("Suhu 1"),
                                 SizedBox(height: 8),
                                 Text("$suhu1° C"),
                               ],
@@ -56,7 +56,7 @@ class _QuaildeaState extends State<Quaildea> {
                             child: myCard(
                               Colors.white,
                               [
-                                textHeader("Suhu 2"),
+                                myTextHeader("Suhu 2"),
                                 SizedBox(height: 8),
                                 Text("$suhu2° C"),
                               ],
@@ -84,7 +84,7 @@ class _QuaildeaState extends State<Quaildea> {
                             child: myCard(
                               Colors.white,
                               [
-                                textHeader("Lampu"),
+                                myTextHeader("Lampu"),
                                 SizedBox(height: 8),
                                 Text((stateLampu == 1) ? 'Menyala' : 'Mati'),
                               ],
@@ -105,7 +105,7 @@ class _QuaildeaState extends State<Quaildea> {
     );
   }
 
-  Text textHeader(String text) {
+  Text myTextHeader(String text) {
     return Text(
       text,
       style: TextStyle(fontWeight: FontWeight.bold),
@@ -130,7 +130,7 @@ class _QuaildeaState extends State<Quaildea> {
     );
   }
 
-  SliverAppBar appBar(BuildContext context) {
+  SliverAppBar myAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Colors.grey[850],
       floating: false,
@@ -144,7 +144,7 @@ class _QuaildeaState extends State<Quaildea> {
           children: [
             Image.asset(
               'assets/images/logo.png',
-              height: 30,
+              height: 32,
             ),
             DefaultTextStyle(
               style: const TextStyle(
@@ -175,13 +175,15 @@ class _QuaildeaState extends State<Quaildea> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[850],
-      body: NestedScrollView(
-        headerSliverBuilder: (context, boolean) {
-          return <Widget>[
-            appBar(context),
-          ];
-        },
-        body: appList(),
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, boolean) {
+            return <Widget>[
+              myAppBar(context),
+            ];
+          },
+          body: myAppList(),
+        ),
       ),
     );
   }
