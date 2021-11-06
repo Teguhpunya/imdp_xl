@@ -40,16 +40,17 @@ onStart() {
 
     // read data from firebase
     var data, dataStr, dataJson;
-    double suhu;
+    var suhu1, suhu2;
     dbRef.child('suhu').once().then((value) async {
       data = await value.value[0];
       dataStr = json.encode(data);
       dataJson = json.decode(dataStr);
-      suhu = (dataJson['suhu1'] + dataJson['suhu2']) / 2;
+      suhu1 = dataJson['suhu1'];
+      suhu2 = dataJson['suhu2'];
 
       service.setNotificationInfo(
         title: "Quaildea",
-        content: "Suhu: $suhu° C",
+        content: "Suhu 1: $suhu1° C\n Suhu 2: $suhu2° C",
       );
     });
 
