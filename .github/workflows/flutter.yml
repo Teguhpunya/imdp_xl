@@ -11,17 +11,39 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - uses: subosito/flutter-action@v1.5.3
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.5.0'
+          channel: beta
         env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_JKS: ${{ secrets.KEY_JKS }}
           KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          run: echo $KEY_JKS > key.jks && flutter pub get && flutter test && flutter build apk --split-per-abi --release
-      - run: flutter pub get
-      - run: flutter build apk --split-per-abi --release
-
+      - name: Flutter version
+        run: flutter --version
+      - name: Cache pub dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.FLUTTER_HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+      - name: Download pub dependencies
+        run: flutter pub get
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: key.jks
+          encodedString: ${{ secrets.KEY_JKS }}
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.ALIAS_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+      - name: Build Android Apk
+        run: flutter build apk --split-per-abi --release
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
