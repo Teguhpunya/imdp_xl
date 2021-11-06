@@ -19,67 +19,82 @@ class _QuaildeaState extends State<Quaildea> {
       builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
         if (snapshot.hasData) {
           List _list = snapshot.data?.snapshot.value;
-          // map.forEach((dynamic, v) => print(v["pic"]));
 
-          return GridView.builder(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+          return ListView.builder(
             itemCount: _list.length,
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
             itemBuilder: (BuildContext context, int index) {
               var suhu1 = _list[index]['suhu1'];
               var suhu2 = _list[index]['suhu2'];
               var stateLampu = _list[index]['stateLampu'];
-              return Card(
-                color: Colors.grey[900],
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(
-                      FontAwesomeIcons.thermometerEmpty,
-                      color: Colors.white,
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+              return myCard(
+                Colors.grey[900],
+                [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.thermometerEmpty,
+                        color: Colors.white,
+                      ),
+                      mySizedBox(),
+                      Row(
                         children: [
-                          myCard(
-                            [
-                              textHeader("Suhu 1"),
-                              SizedBox(height: 8),
-                              Text("$suhu1° C"),
-                            ],
+                          Expanded(
+                            child: myCard(
+                              Colors.white,
+                              [
+                                textHeader("Suhu 1"),
+                                SizedBox(height: 8),
+                                Text("$suhu1° C"),
+                              ],
+                            ),
                           ),
-                          myCard(
-                            [
-                              textHeader("Suhu 2"),
-                              SizedBox(height: 8),
-                              Text("$suhu2° C"),
-                            ],
+                          Expanded(
+                            child: myCard(
+                              Colors.white,
+                              [
+                                textHeader("Suhu 2"),
+                                SizedBox(height: 8),
+                                Text("$suhu2° C"),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    Icon(
-                      FontAwesomeIcons.lightbulb,
-                      color: Colors.white,
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mySizedBox(),
+                      Divider(
+                        color: Colors.white30,
+                        indent: MediaQuery.of(context).size.width / 4,
+                        endIndent: MediaQuery.of(context).size.width / 4,
+                        thickness: 1.0,
+                        height: 1.0,
+                      ),
+                      mySizedBox(),
+                      Icon(
+                        FontAwesomeIcons.lightbulb,
+                        color: Colors.white,
+                      ),
+                      mySizedBox(),
+                      Row(
                         children: [
-                          myCard(
-                            [
-                              textHeader("Lampu"),
-                              SizedBox(height: 8),
-                              Text((stateLampu == 1) ? 'Menyala' : 'Mati'),
-                            ],
+                          Expanded(
+                            child: myCard(
+                              Colors.white,
+                              [
+                                textHeader("Lampu"),
+                                SizedBox(height: 8),
+                                Text((stateLampu == 1) ? 'Menyala' : 'Mati'),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               );
             },
           );
@@ -103,8 +118,9 @@ class _QuaildeaState extends State<Quaildea> {
     );
   }
 
-  Card myCard(List<Widget> children) {
+  Card myCard(Color? color, List<Widget> children) {
     return Card(
+      color: color,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
