@@ -2,6 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
+import 'package:imdp_xl/database/db_helper.dart';
+import 'package:imdp_xl/models/pembenih.dart';
 
 class Quaildea extends StatefulWidget {
   const Quaildea({Key? key}) : super(key: key);
@@ -10,8 +13,38 @@ class Quaildea extends StatefulWidget {
   _QuaildeaState createState() => _QuaildeaState();
 }
 
-class _QuaildeaState extends State<Quaildea> {
+class _QuaildeaState extends State<Quaildea>
+    with SingleTickerProviderStateMixin {
   final dbRef = FirebaseDatabase.instance.reference();
+
+  final DbHelper _dbHelper = new DbHelper();
+  late TabController _tabController;
+  late final List<Widget> _tabViews;
+  final List<Widget> _tabs = [
+    Icon(
+      FontAwesomeIcons.earlybirds,
+    ),
+    Icon(
+      FontAwesomeIcons.bookReader,
+    ),
+  ];
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabController = TabController(length: _tabs.length, vsync: this);
+    _tabViews = [
+      myAppList(),
+      testList(),
+    ];
+  }
 
   Widget myAppList() {
     return StreamBuilder(
@@ -171,10 +204,42 @@ class _QuaildeaState extends State<Quaildea> {
     );
   }
 
+  testList() {
+    return FutureBuilder(
+      future: _dbHelper.getDataPembenih(PembenihQuery.TABLE_NAME),
+      builder: (BuildContext context, AsyncSnapshot<List<Pembenih>> snapshot) {
+        var data = snapshot.data;
+        if (snapshot.hasData) {
+          return ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return Center(
+                  child: myCard(
+                    Colors.white,
+                    [
+                      Text(
+                        "${data![index].toJson()}",
+                      ),
+                    ],
+                  ),
+                );
+              });
+        } else {
+          return myCard(Colors.white, [CircularProgressIndicator()]);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[850],
+      bottomNavigationBar: TabBar(
+        controller: _tabController,
+        tabs: _tabs,
+        padding: EdgeInsets.symmetric(vertical: 8),
+      ),
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, boolean) {
@@ -182,7 +247,10 @@ class _QuaildeaState extends State<Quaildea> {
               myAppBar(context),
             ];
           },
-          body: myAppList(),
+          body: TabBarView(
+            controller: _tabController,
+            children: _tabViews,
+          ),
         ),
       ),
     );

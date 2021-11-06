@@ -1,4 +1,5 @@
 import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
+import 'package:imdp_xl/models/pembenih.dart';
 import 'package:sqflite/sqflite.dart' as sqlite;
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart' as path;
@@ -46,5 +47,12 @@ class DbHelper {
     final db = await openDB();
     var result = await db.query(tableName);
     return result.toList();
+  }
+
+  Future<List<Pembenih>> getDataPembenih(String tableName) async {
+    final db = await openDB();
+    final List<Map<String, Object?>> result =
+        await db.query(tableName, orderBy: 'id DESC');
+    return result.map((e) => Pembenih.fromJson(e)).toList();
   }
 }
