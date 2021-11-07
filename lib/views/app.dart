@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,16 +19,23 @@ class _QuaildeaState extends State<Quaildea>
     with SingleTickerProviderStateMixin {
   final dbRef = FirebaseDatabase.instance.reference();
 
+  late final List<Widget> _tabViews;
+
   final DbHelper _dbHelper = new DbHelper();
   late TabController _tabController;
-  static final List<Widget> _tabViews = [];
-  final List<Widget> _tabs = [
-    Icon(
-      FontAwesomeIcons.earlybirds,
-    ),
-    Icon(
-      FontAwesomeIcons.bookReader,
-    ),
+  final List<TabItem> _tabs = [
+    TabItem(
+        icon: Icon(
+          FontAwesomeIcons.earlybirds,
+          // color: Colors.white,
+        ),
+        title: 'Dashboard'),
+    TabItem(
+        icon: Icon(
+          FontAwesomeIcons.bookReader,
+          // color: Colors.white,
+        ),
+        title: 'History'),
   ];
 
   @override
@@ -39,16 +47,16 @@ class _QuaildeaState extends State<Quaildea>
   @override
   void initState() {
     super.initState();
-    _tabViews.addAll([
-      myAppList(),
-      testList(),
+    _tabViews = [
+      myDashboard(),
+      myHistory(),
       // VisualizeTab(),
-    ]);
+    ];
 
     _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
-  Widget myAppList() {
+  Widget myDashboard() {
     return StreamBuilder(
       stream: dbRef.child("suhu").onValue,
       builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
@@ -165,6 +173,16 @@ class _QuaildeaState extends State<Quaildea>
     );
   }
 
+  Widget myListOnCard(Color? color, child) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Card(
+        color: color,
+        child: Padding(padding: const EdgeInsets.all(16.0), child: child),
+      ),
+    );
+  }
+
   SliverAppBar myAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Colors.grey[850],
@@ -209,36 +227,97 @@ class _QuaildeaState extends State<Quaildea>
   Stream<List<Pembenih>> _fetchData() async* {
     // This loop will run forever
     while (true) {
-      await Future<void>.delayed(Duration(seconds: 1));
       // Fetch data from database
       yield await _dbHelper.getDataPembenih(PembenihQuery.TABLE_NAME);
+      // Update every 10 seconds
+      await Future<void>.delayed(Duration(seconds: 1));
     }
   }
 
-  testList() {
-    return StreamBuilder(
-      stream: _fetchData().asBroadcastStream(),
-      builder: (BuildContext context, AsyncSnapshot<List<Pembenih>> snapshot) {
-        var data = snapshot.data;
-        if (snapshot.hasData) {
-          return ListView.builder(
-              itemCount: data!.length,
-              itemBuilder: (context, index) {
-                return Center(
-                  child: myCard(
-                    Colors.white,
-                    [
-                      Text(
-                        "${data[index].toJson()}",
+  Widget myHistory() {
+    return Container(
+      // margin: EdgeInsets.only(top: 30),
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: myCard(Colors.grey[900], [
+        Expanded(
+          flex: 1,
+          child: Text(
+            'History',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+        Expanded(
+          flex: 8,
+          child: StreamBuilder(
+            stream: _fetchData().asBroadcastStream(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Pembenih>> snapshot) {
+              var data = snapshot.data;
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: data!.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: myCard(
+                        Colors.black,
+                        [
+                          myCard(
+                            Colors.white,
+                            [
+                              myTextHeader("Waktu"),
+                              Text(
+                                "${DateTime.fromMillisecondsSinceEpoch(data[index].timestamp).toLocal()}",
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: myCard(
+                                  Colors.white,
+                                  [
+                                    myTextHeader("Suhu 1"),
+                                    Text(
+                                      "${data[index].suhu1}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: myCard(
+                                  Colors.white,
+                                  [
+                                    myTextHeader("Suhu 2"),
+                                    Text(
+                                      "${data[index].suhu2}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          myCard(
+                            Colors.white,
+                            [
+                              myTextHeader("Lampu"),
+                              Text((data[index].stateLampu == 1)
+                                  ? 'Menyala'
+                                  : 'Mati'),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
-              });
-        } else {
-          return myCard(Colors.white, [CircularProgressIndicator()]);
-        }
-      },
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ),
+      ]),
     );
   }
 
@@ -246,10 +325,14 @@ class _QuaildeaState extends State<Quaildea>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[850],
-      bottomNavigationBar: TabBar(
+      bottomNavigationBar: ConvexAppBar(
+        items: _tabs,
         controller: _tabController,
-        tabs: _tabs,
-        padding: EdgeInsets.symmetric(vertical: 8),
+        backgroundColor: Colors.black,
+        activeColor: Colors.white,
+        height: 48,
+        top: -16,
+        style: TabStyle.titled,
       ),
       body: SafeArea(
         child: NestedScrollView(

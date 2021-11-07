@@ -45,7 +45,7 @@ myBackgroundService() {
     // read data from firebase
     var data, dataStr, dataJson;
     var suhu1, suhu2, stateLampu;
-    Pembenih pembenih, lastData;
+    Pembenih pembenih, lastLocalData;
 
     dbRef.child('suhu/0').once().then((value) async {
       data = await value.value;
@@ -57,11 +57,11 @@ myBackgroundService() {
       stateLampu = pembenih.stateLampu;
 
       if (await dbHelper.hasData(PembenihQuery.TABLE_NAME)) {
-        lastData =
+        lastLocalData =
             await dbHelper.getSingleDataPembenih(PembenihQuery.TABLE_NAME);
-        if (suhu1 != lastData.suhu1 ||
-            suhu2 != lastData.suhu2 ||
-            stateLampu != lastData.stateLampu) {
+        if (suhu1 != lastLocalData.suhu1 ||
+            suhu2 != lastLocalData.suhu2 ||
+            stateLampu != lastLocalData.stateLampu) {
           int currentTime = DateTime.now().millisecondsSinceEpoch;
 
           // change timestamp and insert data to local database
@@ -78,10 +78,11 @@ myBackgroundService() {
       }
 
       // set notification
+      DateTime now = DateTime.fromMillisecondsSinceEpoch(dataJson['timestamp']);
       service.setNotificationInfo(
         title: "Quaildea",
         content:
-            "Suhu 1: $suhu1° C\nSuhu 2: $suhu2° C\n${DateTime.fromMillisecondsSinceEpoch(dataJson['timestamp'])}",
+            "Suhu: ${(suhu1 + suhu2) / 2}° C | Update terakhir: ${now.hour}:${now.minute} ${now.year}/${now.month}/${now.day}",
       );
     });
 
