@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
 import 'package:imdp_xl/models/pembenih.dart';
+// import 'package:imdp_xl/views/visualize/visualize_tab.dart';
 
 class Quaildea extends StatefulWidget {
   const Quaildea({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _QuaildeaState extends State<Quaildea>
 
   final DbHelper _dbHelper = new DbHelper();
   late TabController _tabController;
-  late final List<Widget> _tabViews;
+  static final List<Widget> _tabViews = [];
   final List<Widget> _tabs = [
     Icon(
       FontAwesomeIcons.earlybirds,
@@ -31,19 +32,20 @@ class _QuaildeaState extends State<Quaildea>
 
   @override
   void dispose() {
-    super.dispose();
     _tabController.dispose();
+    super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-
-    _tabController = TabController(length: _tabs.length, vsync: this);
-    _tabViews = [
+    _tabViews.addAll([
       myAppList(),
       testList(),
-    ];
+      // VisualizeTab(),
+    ]);
+
+    _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
   Widget myAppList() {
@@ -204,21 +206,30 @@ class _QuaildeaState extends State<Quaildea>
     );
   }
 
+  Stream<List<Pembenih>> _fetchData() async* {
+    // This loop will run forever
+    while (true) {
+      await Future<void>.delayed(Duration(seconds: 1));
+      // Fetch data from database
+      yield await _dbHelper.getDataPembenih(PembenihQuery.TABLE_NAME);
+    }
+  }
+
   testList() {
-    return FutureBuilder(
-      future: _dbHelper.getDataPembenih(PembenihQuery.TABLE_NAME),
+    return StreamBuilder(
+      stream: _fetchData().asBroadcastStream(),
       builder: (BuildContext context, AsyncSnapshot<List<Pembenih>> snapshot) {
         var data = snapshot.data;
         if (snapshot.hasData) {
           return ListView.builder(
-              itemCount: 10,
+              itemCount: data!.length,
               itemBuilder: (context, index) {
                 return Center(
                   child: myCard(
                     Colors.white,
                     [
                       Text(
-                        "${data![index].toJson()}",
+                        "${data[index].toJson()}",
                       ),
                     ],
                   ),
@@ -248,6 +259,7 @@ class _QuaildeaState extends State<Quaildea>
             ];
           },
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: _tabViews,
           ),

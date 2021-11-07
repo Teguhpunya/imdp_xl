@@ -55,4 +55,19 @@ class DbHelper {
         await db.query(tableName, orderBy: 'id DESC');
     return result.map((e) => Pembenih.fromJson(e)).toList();
   }
+
+  Future<Pembenih> getSingleDataPembenih(String tableName) async {
+    final db = await openDB();
+    final List<Map<String, Object?>> result =
+        await db.query(tableName, orderBy: 'id DESC', limit: 1);
+    return Pembenih.fromJson(result[0]);
+  }
+
+  Future<bool> hasData(String tableName) async {
+    final db = await openDB();
+    var result = await db.rawQuery(
+      'SELECT 1 FROM $tableName',
+    );
+    return result.isNotEmpty;
+  }
 }

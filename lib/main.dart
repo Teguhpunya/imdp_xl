@@ -16,7 +16,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-onStart() {
+myBackgroundService() {
   WidgetsFlutterBinding.ensureInitialized();
   final service = FlutterBackgroundService();
   final dbRef = FirebaseDatabase.instance.reference();
@@ -44,23 +44,45 @@ onStart() {
 
     // read data from firebase
     var data, dataStr, dataJson;
-    var suhu1, suhu2;
-    Pembenih pembenih;
+    var suhu1, suhu2, stateLampu;
+    Pembenih pembenih, lastData;
 
-    dbRef.child('suhu').once().then((value) async {
-      data = await value.value[0];
+    dbRef.child('suhu/0').once().then((value) async {
+      data = await value.value;
       dataStr = json.encode(data);
       dataJson = json.decode(dataStr);
       pembenih = pembenihFromJson(dataStr);
-      suhu1 = dataJson['suhu1'];
-      suhu2 = dataJson['suhu2'];
+      suhu1 = pembenih.suhu1;
+      suhu2 = pembenih.suhu2;
+      stateLampu = pembenih.stateLampu;
 
+      if (await dbHelper.hasData(PembenihQuery.TABLE_NAME)) {
+        lastData =
+            await dbHelper.getSingleDataPembenih(PembenihQuery.TABLE_NAME);
+        if (suhu1 != lastData.suhu1 ||
+            suhu2 != lastData.suhu2 ||
+            stateLampu != lastData.stateLampu) {
+          int currentTime = DateTime.now().millisecondsSinceEpoch;
+
+          // change timestamp and insert data to local database
+          dataJson['timestamp'] = currentTime;
+          pembenih = pembenihFromJson(json.encode(dataJson));
+          dbHelper.insert(PembenihQuery.TABLE_NAME, pembenih.toJson());
+
+          // update timestamp to firebase
+          dbRef.child('/suhu/${value.key}').update({'timestamp': currentTime});
+        }
+      } else {
+        pembenih = pembenihFromJson(json.encode(dataJson));
+        dbHelper.insert(PembenihQuery.TABLE_NAME, pembenih.toJson());
+      }
+
+      // set notification
       service.setNotificationInfo(
         title: "Quaildea",
-        content: "Suhu 1: $suhu1° C\n Suhu 2: $suhu2° C",
+        content:
+            "Suhu 1: $suhu1° C\nSuhu 2: $suhu2° C\n${DateTime.fromMillisecondsSinceEpoch(dataJson['timestamp'])}",
       );
-
-      dbHelper.insert(PembenihQuery.TABLE_NAME, pembenih.toJson());
     });
 
     // service.sendData(
@@ -74,7 +96,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterBackgroundService.initialize(onStart);
+    FlutterBackgroundService.initialize(myBackgroundService);
 
     return FutureBuilder(
         future: Init.instance.initialize(),
@@ -82,7 +104,7 @@ class MyApp extends StatelessWidget {
           // Show splash screen while waiting for app resources to load:
           if (snapshot.connectionState == ConnectionState.waiting) {
             return MaterialApp(
-              home: Splash(),
+              home: SplashScreen(),
             );
           } else {
             // Loading is done, return the app:,
@@ -110,7 +132,7 @@ class Init {
   }
 }
 
-class Splash extends StatelessWidget {
+class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool lightMode =
