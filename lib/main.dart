@@ -55,6 +55,7 @@ myBackgroundService() {
       suhu1 = pembenih.suhu1;
       suhu2 = pembenih.suhu2;
       stateLampu = pembenih.stateLampu;
+      int currentTime = DateTime.now().millisecondsSinceEpoch;
 
       if (await dbHelper.hasData(PembenihQuery.TABLE_NAME)) {
         lastLocalData =
@@ -62,8 +63,6 @@ myBackgroundService() {
         if (suhu1 != lastLocalData.suhu1 ||
             suhu2 != lastLocalData.suhu2 ||
             stateLampu != lastLocalData.stateLampu) {
-          int currentTime = DateTime.now().millisecondsSinceEpoch;
-
           // change timestamp and insert data to local database
           dataJson['timestamp'] = currentTime;
           pembenih = pembenihFromJson(json.encode(dataJson));
@@ -80,9 +79,9 @@ myBackgroundService() {
       // set notification
       DateTime now = DateTime.fromMillisecondsSinceEpoch(dataJson['timestamp']);
       service.setNotificationInfo(
-        title: "Quaildea",
+        title: "Suhu: ${(suhu1 + suhu2) / 2}° C",
         content:
-            "Suhu: ${(suhu1 + suhu2) / 2}° C | Update terakhir: ${now.hour}:${now.minute} ${now.year}/${now.month}/${now.day}",
+            "Update terakhir: ${now.hour}:${now.minute} ${now.year}/${now.month}/${now.day}",
       );
     });
 
