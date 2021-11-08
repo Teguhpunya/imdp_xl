@@ -54,12 +54,18 @@ class _HistoryTab extends State<HistoryView> {
                       child: MyCard(
                         color: Colors.black,
                         children: [
-                          MyCard(
-                            color: Colors.white,
+                          Row(
                             children: [
-                              MyTextHeader(text: "Waktu"),
-                              Text(
-                                "${DateTime.fromMillisecondsSinceEpoch(data[index].timestamp).toLocal()}",
+                              Expanded(
+                                child: MyCard(
+                                  color: Colors.white,
+                                  children: [
+                                    MyTextHeader(text: "Waktu"),
+                                    Text(
+                                      "${DateTime.fromMillisecondsSinceEpoch(data[index].timestamp).toLocal()}",
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -89,13 +95,19 @@ class _HistoryTab extends State<HistoryView> {
                               ),
                             ],
                           ),
-                          MyCard(
-                            color: Colors.white,
+                          Row(
                             children: [
-                              MyTextHeader(text: "Lampu"),
-                              Text((data[index].stateLampu == 1)
-                                  ? 'Menyala'
-                                  : 'Mati'),
+                              Expanded(
+                                child: MyCard(
+                                  color: Colors.white,
+                                  children: [
+                                    MyTextHeader(text: "Lampu"),
+                                    Text((data[index].stateLampu == 1)
+                                        ? 'Menyala'
+                                        : 'Mati'),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ],
