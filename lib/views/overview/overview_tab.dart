@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
+import 'package:imdp_xl/database/db_helper.dart';
 
 class OverviewTab extends StatefulWidget {
   const OverviewTab({Key? key}) : super(key: key);
@@ -62,18 +64,32 @@ class _OverviewTabState extends State<OverviewTab> {
             ],
           ),
         ),
-        mainContainer(Container(
-          height: 128,
-          child: Center(
-            child: Text(
-              'Coming Soon',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+        mainContainer(
+          Container(
+            height: 256,
+            child: FutureBuilder(
+              future: dbRef
+                  .child('suhu')
+                  .once()
+                  .then((snapshot) => snapshot.value[0]),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final data = json.encode(snapshot.data);
+                  final dataJson = json.decode(data);
+                  return Text(
+                    "${dataJson['suhu1']}",
+                    style: TextStyle(fontSize: 28),
+                  );
+                } else {
+                  return Text(
+                    'data',
+                    style: TextStyle(fontSize: 28),
+                  );
+                }
+              },
             ),
           ),
-        )),
+        ),
       ],
     );
   }
@@ -201,6 +217,12 @@ class _OverviewTabState extends State<OverviewTab> {
       default:
         return 'Kosong';
     }
+  }
+
+  void write(DataSnapshot firebaseData) async {
+    final DbHelper _helper = new DbHelper();
+    _helper.insert(PembenihQuery.TABLE_NAME, firebaseData.value[0]);
+    print(_helper.getData(PembenihQuery.TABLE_NAME).toString());
   }
 
   @override

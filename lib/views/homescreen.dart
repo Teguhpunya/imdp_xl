@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/views/overview/overview_tab.dart';
 import 'package:imdp_xl/views/pembenihan/pembenihan_tab.dart';
-import 'package:imdp_xl/views/petelur/petelur_tab.dart';
+import 'package:imdp_xl/views/petelur/backuppetelur_tab.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 
 class HomeScreen extends StatefulWidget {

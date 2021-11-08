@@ -2,9 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/views/dashboard/dashboard_tab.dart';
+import 'package:imdp_xl/views/pembenih/pembenih_tab.dart';
 import 'package:imdp_xl/views/history/history_tab.dart';
-// import 'package:imdp_xl/views/visualize/visualize_tab.dart';
+import 'package:imdp_xl/views/petelur/petelur_tab.dart';
 
 class Quaildea extends StatefulWidget {
   const Quaildea({Key? key}) : super(key: key);
@@ -24,7 +24,13 @@ class _QuaildeaState extends State<Quaildea>
           FontAwesomeIcons.earlybirds,
           // color: Colors.white,
         ),
-        title: 'Dashboard'),
+        title: 'Pembenih'),
+    TabItem(
+        icon: Icon(
+          FontAwesomeIcons.egg,
+          // color: Colors.white,
+        ),
+        title: 'Petelur'),
     TabItem(
         icon: Icon(
           FontAwesomeIcons.bookReader,
@@ -43,9 +49,9 @@ class _QuaildeaState extends State<Quaildea>
   void initState() {
     super.initState();
     _tabViews = [
-      DashboardView(),
+      PembenihView(),
+      PetelurView(),
       HistoryView(),
-      // VisualizeTab(),
     ];
 
     _tabController = TabController(length: _tabs.length, vsync: this);

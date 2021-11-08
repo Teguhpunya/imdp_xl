@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
@@ -28,131 +29,142 @@ class _HistoryTab extends State<HistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin: EdgeInsets.only(top: 30),
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: MyCard(color: Colors.grey[900], children: [
-        Expanded(
-          flex: 1,
-          child: Text(
-            'History',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+    return Scaffold(
+      floatingActionButton: SpeedDial(
+        icon: FontAwesomeIcons.bars,
+        overlayColor: Colors.transparent,
+        children: [
+          SpeedDialChild(
+            label: 'Simpan',
+            child: Icon(FontAwesomeIcons.save),
+          )
+        ],
+      ),
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: MyCard(color: Colors.grey[900], children: [
+          Expanded(
+            flex: 1,
+            child: Text(
+              'History',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
           ),
-        ),
-        Expanded(
-          flex: 8,
-          child: StreamBuilder(
-            stream: _fetchData().asBroadcastStream(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<Pembenih>> snapshot) {
-              var data = snapshot.data;
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: data!.length,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Center(
-                      child: MyCard(
-                        color: Colors.black,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  FontAwesomeIcons.clock,
-                                  color: Colors.white,
+          Expanded(
+            flex: 8,
+            child: StreamBuilder(
+              stream: _fetchData().asBroadcastStream(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Pembenih>> snapshot) {
+                var data = snapshot.data;
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: data!.length,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Center(
+                        child: MyCard(
+                          color: Colors.black,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    FontAwesomeIcons.clock,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: MyCard(
-                                  color: Colors.white,
-                                  children: [
-                                    MyTextHeader(text: "Waktu"),
-                                    Text(
-                                      "${DateTime.fromMillisecondsSinceEpoch(data[index].timestamp).toLocal()}",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  FontAwesomeIcons.thermometerEmpty,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: MyCard(
-                                        color: Colors.white,
-                                        children: [
-                                          MyTextHeader(text: "Suhu 1"),
-                                          Text(
-                                            "${data[index].suhu1}° C",
-                                          ),
-                                        ],
+                                Expanded(
+                                  flex: 5,
+                                  child: MyCard(
+                                    color: Colors.white,
+                                    children: [
+                                      MyTextHeader(text: "Waktu"),
+                                      Text(
+                                        "${DateTime.fromMillisecondsSinceEpoch(data[index].timestamp).toLocal()}",
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: MyCard(
-                                        color: Colors.white,
-                                        children: [
-                                          MyTextHeader(text: "Suhu 2"),
-                                          Text(
-                                            "${data[index].suhu2}° C",
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    FontAwesomeIcons.thermometerEmpty,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 5,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: MyCard(
+                                          color: Colors.white,
+                                          children: [
+                                            MyTextHeader(text: "Suhu 1"),
+                                            Text(
+                                              "${data[index].suhu1}° C",
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      Expanded(
+                                        child: MyCard(
+                                          color: Colors.white,
+                                          children: [
+                                            MyTextHeader(text: "Suhu 2"),
+                                            Text(
+                                              "${data[index].suhu2}° C",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  FontAwesomeIcons.lightbulb,
-                                  color: Colors.white,
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    FontAwesomeIcons.lightbulb,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: MyCard(
-                                  color: Colors.white,
-                                  children: [
-                                    MyTextHeader(text: "Lampu"),
-                                    Text((data[index].stateLampu == 1)
-                                        ? 'Menyala'
-                                        : 'Mati'),
-                                  ],
+                                Expanded(
+                                  flex: 5,
+                                  child: MyCard(
+                                    color: Colors.white,
+                                    children: [
+                                      MyTextHeader(text: "Lampu"),
+                                      Text((data[index].stateLampu == 1)
+                                          ? 'Menyala'
+                                          : 'Mati'),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

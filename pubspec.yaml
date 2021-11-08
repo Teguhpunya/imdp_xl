@@ -43,6 +43,8 @@ dependencies:
   flutter_background_service: ^0.1.5
   animated_text_kit: ^4.2.1
   convex_bottom_bar: ^3.0.0
+  syncfusion_flutter_datagrid: ^19.3.48
+  syncfusion_flutter_datagrid_export: ^19.3.48-beta
 
 dev_dependencies:
   flutter_test:
