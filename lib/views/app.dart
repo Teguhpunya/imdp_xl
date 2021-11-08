@@ -1,11 +1,9 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
-import 'package:imdp_xl/database/db_helper.dart';
-import 'package:imdp_xl/models/pembenih.dart';
+import 'package:imdp_xl/views/dashboard/dashboard_tab.dart';
+import 'package:imdp_xl/views/history/history_tab.dart';
 // import 'package:imdp_xl/views/visualize/visualize_tab.dart';
 
 class Quaildea extends StatefulWidget {
@@ -17,11 +15,8 @@ class Quaildea extends StatefulWidget {
 
 class _QuaildeaState extends State<Quaildea>
     with SingleTickerProviderStateMixin {
-  final dbRef = FirebaseDatabase.instance.reference();
-
   late final List<Widget> _tabViews;
 
-  final DbHelper _dbHelper = new DbHelper();
   late TabController _tabController;
   final List<TabItem> _tabs = [
     TabItem(
@@ -48,129 +43,12 @@ class _QuaildeaState extends State<Quaildea>
   void initState() {
     super.initState();
     _tabViews = [
-      myDashboard(),
-      myHistory(),
+      DashboardView(),
+      HistoryView(),
       // VisualizeTab(),
     ];
 
     _tabController = TabController(length: _tabs.length, vsync: this);
-  }
-
-  Widget myDashboard() {
-    return StreamBuilder(
-      stream: dbRef.child("suhu").onValue,
-      builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
-        if (snapshot.hasData) {
-          List _list = snapshot.data?.snapshot.value;
-
-          return ListView.builder(
-            itemCount: _list.length,
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            itemBuilder: (BuildContext context, int index) {
-              var suhu1 = _list[index]['suhu1'];
-              var suhu2 = _list[index]['suhu2'];
-              var stateLampu = _list[index]['stateLampu'];
-              return myCard(
-                Colors.grey[900],
-                [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Icon(
-                        FontAwesomeIcons.thermometerEmpty,
-                        color: Colors.white,
-                      ),
-                      mySizedBox(),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: myCard(
-                              Colors.white,
-                              [
-                                myTextHeader("Suhu 1"),
-                                SizedBox(height: 8),
-                                Text("$suhu1° C"),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: myCard(
-                              Colors.white,
-                              [
-                                myTextHeader("Suhu 2"),
-                                SizedBox(height: 8),
-                                Text("$suhu2° C"),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      mySizedBox(),
-                      Divider(
-                        color: Colors.white30,
-                        indent: MediaQuery.of(context).size.width / 4,
-                        endIndent: MediaQuery.of(context).size.width / 4,
-                        thickness: 1.0,
-                        height: 1.0,
-                      ),
-                      mySizedBox(),
-                      Icon(
-                        FontAwesomeIcons.lightbulb,
-                        color: Colors.white,
-                      ),
-                      mySizedBox(),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: myCard(
-                              Colors.white,
-                              [
-                                myTextHeader("Lampu"),
-                                SizedBox(height: 8),
-                                Text((stateLampu == 1) ? 'Menyala' : 'Mati'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  Text myTextHeader(String text) {
-    return Text(
-      text,
-      style: TextStyle(fontWeight: FontWeight.bold),
-    );
-  }
-
-  SizedBox mySizedBox() {
-    return SizedBox(
-      height: 16,
-    );
-  }
-
-  Card myCard(Color? color, List<Widget> children) {
-    return Card(
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: children,
-        ),
-      ),
-    );
   }
 
   Widget myListOnCard(Color? color, child) {
@@ -221,103 +99,6 @@ class _QuaildeaState extends State<Quaildea>
           ],
         ),
       ),
-    );
-  }
-
-  Stream<List<Pembenih>> _fetchData() async* {
-    // This loop will run forever
-    while (true) {
-      // Fetch data from database
-      yield await _dbHelper.getDataPembenih(PembenihQuery.TABLE_NAME);
-      // Update every 10 seconds
-      await Future<void>.delayed(Duration(seconds: 1));
-    }
-  }
-
-  Widget myHistory() {
-    return Container(
-      // margin: EdgeInsets.only(top: 30),
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: myCard(Colors.grey[900], [
-        Expanded(
-          flex: 1,
-          child: Text(
-            'History',
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),
-        ),
-        Expanded(
-          flex: 8,
-          child: StreamBuilder(
-            stream: _fetchData().asBroadcastStream(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<Pembenih>> snapshot) {
-              var data = snapshot.data;
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: data!.length,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Center(
-                      child: myCard(
-                        Colors.black,
-                        [
-                          myCard(
-                            Colors.white,
-                            [
-                              myTextHeader("Waktu"),
-                              Text(
-                                "${DateTime.fromMillisecondsSinceEpoch(data[index].timestamp).toLocal()}",
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: myCard(
-                                  Colors.white,
-                                  [
-                                    myTextHeader("Suhu 1"),
-                                    Text(
-                                      "${data[index].suhu1}",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: myCard(
-                                  Colors.white,
-                                  [
-                                    myTextHeader("Suhu 2"),
-                                    Text(
-                                      "${data[index].suhu2}",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          myCard(
-                            Colors.white,
-                            [
-                              myTextHeader("Lampu"),
-                              Text((data[index].stateLampu == 1)
-                                  ? 'Menyala'
-                                  : 'Mati'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-        ),
-      ]),
     );
   }
 
