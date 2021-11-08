@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
 import 'package:imdp_xl/models/pembenih.dart';
@@ -57,6 +58,14 @@ class _HistoryTab extends State<HistoryView> {
                           Row(
                             children: [
                               Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  FontAwesomeIcons.clock,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 5,
                                 child: MyCard(
                                   color: Colors.white,
                                   children: [
@@ -72,23 +81,37 @@ class _HistoryTab extends State<HistoryView> {
                           Row(
                             children: [
                               Expanded(
-                                child: MyCard(
+                                flex: 1,
+                                child: Icon(
+                                  FontAwesomeIcons.thermometerEmpty,
                                   color: Colors.white,
-                                  children: [
-                                    MyTextHeader(text: "Suhu 1"),
-                                    Text(
-                                      "${data[index].suhu1}",
-                                    ),
-                                  ],
                                 ),
                               ),
                               Expanded(
-                                child: MyCard(
-                                  color: Colors.white,
+                                flex: 5,
+                                child: Row(
                                   children: [
-                                    MyTextHeader(text: "Suhu 2"),
-                                    Text(
-                                      "${data[index].suhu2}",
+                                    Expanded(
+                                      child: MyCard(
+                                        color: Colors.white,
+                                        children: [
+                                          MyTextHeader(text: "Suhu 1"),
+                                          Text(
+                                            "${data[index].suhu1}° C",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: MyCard(
+                                        color: Colors.white,
+                                        children: [
+                                          MyTextHeader(text: "Suhu 2"),
+                                          Text(
+                                            "${data[index].suhu2}° C",
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -98,6 +121,14 @@ class _HistoryTab extends State<HistoryView> {
                           Row(
                             children: [
                               Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  FontAwesomeIcons.lightbulb,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 5,
                                 child: MyCard(
                                   color: Colors.white,
                                   children: [
