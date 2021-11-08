@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
 import 'package:imdp_xl/models/pembenih.dart';
@@ -111,6 +112,8 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               title: 'Quaildea',
               theme: ThemeData(
+                textTheme:
+                    GoogleFonts.openSansTextTheme(Theme.of(context).textTheme),
                 primarySwatch: Colors.blue,
                 scaffoldBackgroundColor: Colors.transparent,
               ),

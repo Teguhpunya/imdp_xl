@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyAppBar extends StatelessWidget {
   const MyAppBar({
@@ -19,6 +20,7 @@ class MyAppBar extends StatelessWidget {
       expandedHeight: MediaQuery.of(context).size.height / 3,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
+        titlePadding: EdgeInsets.only(bottom: 8),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -27,12 +29,19 @@ class MyAppBar extends StatelessWidget {
               height: 32,
             ),
             DefaultTextStyle(
-              style: const TextStyle(
-                fontFamily: 'Agne',
-                color: Colors.white,
-                fontSize: 28,
-                letterSpacing: 2.5,
+              style: GoogleFonts.patrickHand(
+                textStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  letterSpacing: 2.5,
+                ),
               ),
+              // const TextStyle(
+              //   fontFamily: 'Agne',
+              //   color: Colors.white,
+              //   fontSize: 28,
+              //   letterSpacing: 2.5,
+              // ),
               child: AnimatedTextKit(
                 isRepeatingAnimation: false,
                 animatedTexts: [
