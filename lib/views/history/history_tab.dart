@@ -32,10 +32,12 @@ class _HistoryTab extends State<HistoryView> {
     return Scaffold(
       floatingActionButton: SpeedDial(
         icon: FontAwesomeIcons.bars,
+        backgroundColor: Colors.black,
         overlayColor: Colors.transparent,
+        spacing: 16,
         children: [
           SpeedDialChild(
-            label: 'Simpan',
+            label: 'Simpan sebagai Excel',
             child: Icon(FontAwesomeIcons.save),
           )
         ],
