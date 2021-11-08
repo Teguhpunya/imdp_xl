@@ -1,10 +1,10 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/views/pembenih/pembenih_tab.dart';
 import 'package:imdp_xl/views/history/history_tab.dart';
 import 'package:imdp_xl/views/petelur/petelur_tab.dart';
+import 'package:imdp_xl/views/widgets/appbar.dart';
 
 class Quaildea extends StatefulWidget {
   const Quaildea({Key? key}) : super(key: key);
@@ -67,47 +67,6 @@ class _QuaildeaState extends State<Quaildea>
     );
   }
 
-  SliverAppBar myAppBar(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: Colors.grey[850],
-      floating: false,
-      pinned: true,
-      snap: false,
-      expandedHeight: MediaQuery.of(context).size.height / 3,
-      flexibleSpace: FlexibleSpaceBar(
-        centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logo.png',
-              height: 32,
-            ),
-            DefaultTextStyle(
-              style: const TextStyle(
-                fontFamily: 'Agne',
-                color: Colors.white,
-                fontSize: 28,
-                letterSpacing: 2.5,
-              ),
-              child: AnimatedTextKit(
-                isRepeatingAnimation: false,
-                animatedTexts: [
-                  TypewriterAnimatedText(
-                    'uaildea',
-                    textAlign: TextAlign.center,
-                    curve: Curves.easeOut,
-                    speed: const Duration(milliseconds: 500),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +84,7 @@ class _QuaildeaState extends State<Quaildea>
         child: NestedScrollView(
           headerSliverBuilder: (context, boolean) {
             return <Widget>[
-              myAppBar(context),
+              MyAppBar(context: context),
             ];
           },
           body: TabBarView(
