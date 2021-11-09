@@ -5,6 +5,7 @@ import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
 import 'package:imdp_xl/models/pembenih.dart';
 import 'package:imdp_xl/views/widgets/containers.dart';
+import 'package:imdp_xl/views/widgets/pembenih.dart';
 import 'package:imdp_xl/views/widgets/texts.dart';
 
 class HistoryView extends StatefulWidget {
@@ -135,10 +136,8 @@ class _HistoryTab extends State<HistoryView> {
                               children: [
                                 Expanded(
                                   flex: 1,
-                                  child: Icon(
-                                    FontAwesomeIcons.lightbulb,
-                                    color: Colors.white,
-                                  ),
+                                  child: CekLampuIcon(
+                                      stateLampu: data[index].stateLampu),
                                 ),
                                 Expanded(
                                   flex: 5,

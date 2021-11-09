@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:imdp_xl/views/widgets/containers.dart';
+import 'package:imdp_xl/views/widgets/pembenih.dart';
 import 'package:imdp_xl/views/widgets/texts.dart';
 
 class PembenihView extends StatefulWidget {
@@ -97,9 +98,8 @@ class _PembenihViewState extends State<PembenihView> {
                           children: [
                             Expanded(
                               flex: 1,
-                              child: Icon(
-                                FontAwesomeIcons.lightbulb,
-                                color: Colors.white,
+                              child: CekLampuIcon(
+                                stateLampu: stateLampu,
                               ),
                             ),
                             Expanded(
