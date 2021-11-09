@@ -14,6 +14,7 @@ import 'package:imdp_xl/views/app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FlutterBackgroundService.initialize(myBackgroundService);
   runApp(MyApp());
 }
 
@@ -97,8 +98,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterBackgroundService.initialize(myBackgroundService);
-
     return FutureBuilder(
         future: Init.instance.initialize(),
         builder: (context, AsyncSnapshot snapshot) {
