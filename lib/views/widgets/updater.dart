@@ -171,6 +171,7 @@ class _UpdaterViewState extends State<UpdaterView> {
       appcastConfig: cfg,
       messages: MyUpgraderMessages(code: 'id'),
       // debugAlwaysUpgrade: true,
+      durationToAlertAgain: Duration(minutes: 30),
       dialogStyle: UpgradeDialogStyle.cupertino,
       onUpdate: () {
         _download();
