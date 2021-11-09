@@ -49,6 +49,8 @@ dependencies:
   upgrader: ^3.8.0
   flowder: ^0.2.0
   path_provider: ^2.0.6
+  flutter_local_notifications: ^9.0.3
+  open_file: ^3.2.1
 
 dev_dependencies:
   flutter_test:
