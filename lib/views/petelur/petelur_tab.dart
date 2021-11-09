@@ -62,7 +62,6 @@ class _PetelurViewState extends State<PetelurView> {
                                     children: [
                                       Expanded(
                                         child: MyCard(
-                                          color: Colors.white,
                                           children: [
                                             MyTextHeader(text: "Pakan 1"),
                                             Text((pakan1 == 1)
@@ -73,7 +72,6 @@ class _PetelurViewState extends State<PetelurView> {
                                       ),
                                       Expanded(
                                         child: MyCard(
-                                          color: Colors.white,
                                           children: [
                                             MyTextHeader(text: "Pakan 2"),
                                             Text((pakan2 == 1)
@@ -84,21 +82,6 @@ class _PetelurViewState extends State<PetelurView> {
                                       ),
                                     ],
                                   ),
-                                  // Row(
-                                  //   children: [
-                                  //     Expanded(
-                                  //       child: MyCard(
-                                  //         color: Colors.white,
-                                  //         children: [
-                                  //           MyTextHeader(text: "Tempat pakan"),
-                                  //           Text((result == 1)
-                                  //               ? 'Penuh'
-                                  //               : 'Kosong'),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
                                 ],
                               ),
                             ),

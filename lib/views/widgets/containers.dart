@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MyCard extends StatelessWidget {
-  const MyCard({
+  MyCard({
     Key? key,
-    required this.color,
+    this.color = Colors.white,
     required this.children,
   }) : super(key: key);
 

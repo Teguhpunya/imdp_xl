@@ -61,7 +61,6 @@ class _PembenihViewState extends State<PembenihView> {
                                 children: [
                                   Expanded(
                                     child: MyCard(
-                                      color: Colors.white,
                                       children: [
                                         MyTextHeader(text: "Suhu 1"),
                                         Text(
@@ -72,7 +71,6 @@ class _PembenihViewState extends State<PembenihView> {
                                   ),
                                   Expanded(
                                     child: MyCard(
-                                      color: Colors.white,
                                       children: [
                                         MyTextHeader(text: "Suhu 2"),
                                         Text(
@@ -105,7 +103,6 @@ class _PembenihViewState extends State<PembenihView> {
                             Expanded(
                               flex: 5,
                               child: MyCard(
-                                color: Colors.white,
                                 children: [
                                   MyTextHeader(text: "Lampu"),
                                   Text((stateLampu == 1) ? 'Menyala' : 'Mati'),

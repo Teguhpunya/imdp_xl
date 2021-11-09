@@ -81,7 +81,6 @@ class _HistoryTab extends State<HistoryView> {
                                 Expanded(
                                   flex: 5,
                                   child: MyCard(
-                                    color: Colors.white,
                                     children: [
                                       MyTextHeader(text: "Waktu"),
                                       Text(
@@ -107,7 +106,6 @@ class _HistoryTab extends State<HistoryView> {
                                     children: [
                                       Expanded(
                                         child: MyCard(
-                                          color: Colors.white,
                                           children: [
                                             MyTextHeader(text: "Suhu 1"),
                                             Text(
@@ -118,7 +116,6 @@ class _HistoryTab extends State<HistoryView> {
                                       ),
                                       Expanded(
                                         child: MyCard(
-                                          color: Colors.white,
                                           children: [
                                             MyTextHeader(text: "Suhu 2"),
                                             Text(
@@ -142,7 +139,6 @@ class _HistoryTab extends State<HistoryView> {
                                 Expanded(
                                   flex: 5,
                                   child: MyCard(
-                                    color: Colors.white,
                                     children: [
                                       MyTextHeader(text: "Lampu"),
                                       Text((data[index].stateLampu == 1)
