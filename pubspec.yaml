@@ -46,6 +46,9 @@ dependencies:
   syncfusion_flutter_datagrid: ^19.3.48
   syncfusion_flutter_datagrid_export: ^19.3.48-beta
   google_fonts: ^2.1.0
+  upgrader: ^3.8.0
+  flowder: ^0.2.0
+  path_provider: ^2.0.6
 
 dev_dependencies:
   flutter_test:

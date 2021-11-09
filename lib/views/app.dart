@@ -5,6 +5,7 @@ import 'package:imdp_xl/views/pembenih/pembenih_tab.dart';
 import 'package:imdp_xl/views/history/history_tab.dart';
 import 'package:imdp_xl/views/petelur/petelur_tab.dart';
 import 'package:imdp_xl/views/widgets/appbar.dart';
+import 'package:imdp_xl/views/widgets/updater.dart';
 
 class Quaildea extends StatefulWidget {
   const Quaildea({Key? key}) : super(key: key);
@@ -69,28 +70,30 @@ class _QuaildeaState extends State<Quaildea>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[850],
-      bottomNavigationBar: ConvexAppBar(
-        items: _tabs,
-        controller: _tabController,
-        backgroundColor: Colors.black,
-        activeColor: Colors.white,
-        height: 48,
-        top: -16,
-        style: TabStyle.titled,
-      ),
-      body: SafeArea(
-        child: NestedScrollView(
-          headerSliverBuilder: (context, boolean) {
-            return <Widget>[
-              MyAppBar(context: context),
-            ];
-          },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: _tabViews,
+    return UpdaterView(
+      child: Scaffold(
+        backgroundColor: Colors.grey[850],
+        bottomNavigationBar: ConvexAppBar(
+          items: _tabs,
+          controller: _tabController,
+          backgroundColor: Colors.black,
+          activeColor: Colors.white,
+          height: 48,
+          top: -16,
+          style: TabStyle.titled,
+        ),
+        body: SafeArea(
+          child: NestedScrollView(
+            headerSliverBuilder: (context, boolean) {
+              return <Widget>[
+                MyAppBar(context: context),
+              ];
+            },
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: _tabViews,
+            ),
           ),
         ),
       ),
