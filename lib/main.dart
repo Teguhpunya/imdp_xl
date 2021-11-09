@@ -10,6 +10,7 @@ import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
 import 'package:imdp_xl/models/pembenih.dart';
 import 'package:imdp_xl/views/app.dart';
+import 'package:intl/intl.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,10 +81,10 @@ myBackgroundService() {
 
       // set notification
       DateTime now = DateTime.fromMillisecondsSinceEpoch(dataJson['timestamp']);
+      String formattedNow = DateFormat('HH:mm, yyyy/MM/dd').format(now);
       service.setNotificationInfo(
         title: "Suhu: ${(suhu1 + suhu2) / 2}° C",
-        content:
-            "Update terakhir: ${now.hour}:${now.minute} ${now.year}/${now.month}/${now.day}",
+        content: "Update terakhir: $formattedNow",
       );
     });
 
