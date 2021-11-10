@@ -164,7 +164,8 @@ class _UpdaterViewState extends State<UpdaterView> {
 
   @override
   Widget build(BuildContext context) {
-    final appcastURL = 'https://cast.appcastify.com/teguhpunya/imdp_xl.xml';
+    final appcastURL =
+        'https://raw.githubusercontent.com/Teguhpunya/quaildea_builds/main/quaildea/appcast.xml';
     final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
     _setPath();
     return UpgradeAlert(
