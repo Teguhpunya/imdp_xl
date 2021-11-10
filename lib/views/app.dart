@@ -5,7 +5,7 @@ import 'package:imdp_xl/views/pembenih/pembenih_tab.dart';
 import 'package:imdp_xl/views/history/history_tab.dart';
 import 'package:imdp_xl/views/petelur/petelur_tab.dart';
 import 'package:imdp_xl/views/widgets/appbar.dart';
-import 'package:imdp_xl/views/widgets/updater.dart';
+import 'package:imdp_xl/views/updater/updater.dart';
 
 class Quaildea extends StatefulWidget {
   const Quaildea({Key? key}) : super(key: key);
