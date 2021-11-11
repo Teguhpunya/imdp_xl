@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:imdp_xl/controller/export.dart';
 import 'package:imdp_xl/database/database.queries/pembenih_query.dart';
 import 'package:imdp_xl/database/db_helper.dart';
 import 'package:imdp_xl/models/pembenih.dart';
@@ -40,6 +41,13 @@ class _HistoryTab extends State<HistoryView> {
           SpeedDialChild(
             label: 'Simpan sebagai Excel',
             child: Icon(FontAwesomeIcons.save),
+            onTap: () {
+              ExportHistory().export();
+              showDialog(
+                context: context,
+                builder: (context) => Center(child: Text("Berhasil!")),
+              );
+            },
           )
         ],
       ),
