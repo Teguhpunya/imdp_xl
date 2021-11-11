@@ -10,24 +10,22 @@ class ExportHistory {
   late List _db;
   final DbHelper _dbHelper = DbHelper();
 
-  void export() async {
+  Future<bool> export(String filePath) async {
     if (await Permission.storage.request().isGranted) {
       List<List<dynamic>> result = await convertToCsv();
 
-      //store file in documents folder
-      String now = DateFormat('HHmm-yyyy-MM-dd').format(DateTime.now());
-      String filePath =
-          "/storage/emulated/0/Documents" + "/quaildea-history-$now.csv";
-
+      //store file in file path
       File f = new File(filePath);
 
       // convert rows to String and write as csv file
       String csv = const ListToCsvConverter().convert(result);
       f.writeAsString(csv);
+      return true;
     } else {
       await [
         Permission.storage,
       ].request();
+      return false;
     }
   }
 

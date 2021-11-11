@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:imdp_xl/models/pembenih.dart';
 import 'package:imdp_xl/views/widgets/containers.dart';
 import 'package:imdp_xl/views/widgets/pembenih.dart';
 import 'package:imdp_xl/views/widgets/texts.dart';
+import 'package:intl/intl.dart';
 
 class HistoryView extends StatefulWidget {
   HistoryView({Key? key}) : super(key: key);
@@ -39,14 +41,39 @@ class _HistoryTab extends State<HistoryView> {
         spacing: 16,
         children: [
           SpeedDialChild(
-            label: 'Simpan sebagai Excel',
+            label: 'Simpan histori',
             child: Icon(FontAwesomeIcons.save),
-            onTap: () {
-              ExportHistory().export();
-              showDialog(
-                context: context,
-                builder: (context) => Center(child: Text("Berhasil!")),
-              );
+            onTap: () async {
+              // CSV file path
+              String now = DateFormat('HHmm-yyyy-MM-dd').format(DateTime.now());
+              String rootPath = "/storage/emulated/0/";
+              String file = "Documents/quaildea-history-$now.csv";
+              String filePath = rootPath + file;
+
+              // Export CSV
+              try {
+                if (await ExportHistory().export(filePath)) {
+                  showAlertDialog(
+                      context: context,
+                      style: AdaptiveStyle.cupertino,
+                      title: "Berhasil menyimpan histori!",
+                      message:
+                          "File disimpan di \n\nPenyimpanan Internal/$file",
+                      actions: [
+                        AlertDialogAction(key: OkCancelResult.ok, label: 'OK')
+                      ]);
+                }
+              } on Exception catch (e) {
+                print(e.toString());
+                showAlertDialog(
+                    context: context,
+                    style: AdaptiveStyle.cupertino,
+                    title: "Gagal menyimpan",
+                    message: "${e.toString()}",
+                    actions: [
+                      AlertDialogAction(key: OkCancelResult.ok, label: 'OK')
+                    ]);
+              }
             },
           )
         ],
@@ -57,7 +84,7 @@ class _HistoryTab extends State<HistoryView> {
           Expanded(
             flex: 1,
             child: Text(
-              'History',
+              'Histori',
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
           ),
